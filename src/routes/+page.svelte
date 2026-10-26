@@ -4,6 +4,7 @@
 	import { TOWERS, HEROES, ENEMIES } from '$lib/game/configs';
 	import { TDGameEngine } from '$lib/game/engine';
 	import type { ActiveEnemy } from '$lib/game/engine';
+	import { sprites, type SpriteKey } from '$lib/game/sprites';
 	import type { TowerId, HeroId, TowerConfig, HeroConfig } from '$lib/game/types';
 
 	const towerList: TowerConfig[] = Object.values(TOWERS);
@@ -30,7 +31,6 @@
 		const x = (ev.clientX - rect.left) * scaleX;
 		const y = (ev.clientY - rect.top) * scaleY;
 
-		// Debug Path/Slot Editor mode for AI & Level tweaking
 		if (game.editorMode) {
 			if (ev.shiftKey) {
 				game.mission.towerSlots = [
@@ -43,25 +43,22 @@
 			return;
 		}
 
-		// 1. Check if clicked a hero
 		for (const h of engine.heroes) {
-			if (Math.hypot(h.x - x, h.y - y) <= 22) {
+			if (Math.hypot(h.x - x, h.y - y) <= 26) {
 				game.activeHeroId = h.id;
 				game.activeSlotId = null;
 				return;
 			}
 		}
 
-		// 2. Check if clicked a tower slot
 		for (const slot of game.mission.towerSlots) {
-			if (Math.hypot(slot.x - x, slot.y - y) <= 28) {
+			if (Math.hypot(slot.x - x, slot.y - y) <= 32) {
 				game.activeSlotId = slot.id;
 				game.activeHeroId = null;
 				return;
 			}
 		}
 
-		// 3. If a hero is selected and game is not paused, command movement
 		if (game.activeHeroId && !game.isPaused) {
 			engine.moveHero(game.activeHeroId, { x, y });
 			return;
@@ -89,7 +86,7 @@
 		const wps = game.mission.waypoints;
 		if (wps.length > 1) {
 			ctx.strokeStyle = '#334155';
-			ctx.lineWidth = 44;
+			ctx.lineWidth = 48;
 			ctx.lineCap = 'round';
 			ctx.lineJoin = 'round';
 			ctx.beginPath();
@@ -114,7 +111,7 @@
 			ctx.beginPath(); ctx.arc(exit.x, exit.y, 22, 0, Math.PI * 2); ctx.fill();
 		}
 
-		// Draw Tower Slots & Built Towers
+		// Draw Tower Slots & Built Towers (with Concept Art Sprites!)
 		for (const slot of game.mission.towerSlots) {
 			const built = engine.towers.get(slot.id);
 			const isSelected = game.activeSlotId === slot.id;
@@ -127,30 +124,74 @@
 				ctx.beginPath(); ctx.arc(slot.x, slot.y, range, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 			}
 
-			ctx.fillStyle = built ? '#1e293b' : '#0f172a';
-			ctx.strokeStyle = isSelected ? '#facc15' : '#64748b';
-			ctx.lineWidth = isSelected ? 3 : 2;
-			ctx.beginPath(); ctx.arc(slot.x, slot.y, 24, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-
 			if (built) {
 				const cfg = TOWERS[built.type];
-				ctx.fillStyle = cfg.color;
-				ctx.beginPath(); ctx.arc(slot.x, slot.y, 16, 0, Math.PI * 2); ctx.fill();
+				let drawnSprite = false;
+
+				// Determine if laser has a target to orient toward
+				let faceRight = false;
+				if (built.type === 'mining_laser' && built.laserTargetUid) {
+					const t = engine.enemies.find((e: ActiveEnemy) => e.uid === built.laserTargetUid);
+					if (t && t.x > slot.x) faceRight = true;
+				}
+
+				if (built.type === 'mining_laser' || built.type === 'drill' || built.type === 'robot_line') {
+					const scale = 1 + (built.level - 1) * 0.06;
+					drawnSprite = sprites.drawCentered(
+						ctx,
+						built.type as SpriteKey,
+						slot.x,
+						slot.y - 6,
+						78 * scale,
+						64 * scale,
+						faceRight
+					);
+				}
+
+				if (!drawnSprite) {
+					ctx.fillStyle = '#1e293b';
+					ctx.strokeStyle = isSelected ? '#facc15' : '#64748b';
+					ctx.lineWidth = isSelected ? 3 : 2;
+					ctx.beginPath(); ctx.arc(slot.x, slot.y, 24, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+					ctx.fillStyle = cfg.color;
+					ctx.beginPath(); ctx.arc(slot.x, slot.y, 16, 0, Math.PI * 2); ctx.fill();
+				} else if (isSelected) {
+					ctx.strokeStyle = '#facc15';
+					ctx.lineWidth = 2;
+					ctx.beginPath(); ctx.arc(slot.x, slot.y, 34, 0, Math.PI * 2); ctx.stroke();
+				}
+
+				// Level badge
 				ctx.fillStyle = '#0f172a';
-				ctx.font = 'bold 12px sans-serif';
+				ctx.fillRect(slot.x + 14, slot.y + 12, 22, 15);
+				ctx.strokeStyle = cfg.color;
+				ctx.lineWidth = 1.5;
+				ctx.strokeRect(slot.x + 14, slot.y + 12, 22, 15);
+				ctx.fillStyle = '#f8fafc';
+				ctx.font = 'bold 10px sans-serif';
 				ctx.textAlign = 'center';
-				ctx.fillText(`L${built.level}`, slot.x, slot.y + 4);
+				ctx.fillText(`L${built.level}`, slot.x + 25, slot.y + 23);
 
 				// Continuous Mining Laser Beam
 				if (built.type === 'mining_laser' && built.laserTargetUid) {
 					const target = engine.enemies.find((e: ActiveEnemy) => e.uid === built.laserTargetUid);
 					if (target) {
+						const muzzleX = slot.x + (faceRight ? 26 : -26);
+						const muzzleY = slot.y - 10;
 						ctx.strokeStyle = '#ef4444';
-						ctx.lineWidth = 2 + built.level * 1.2;
-						ctx.beginPath(); ctx.moveTo(slot.x, slot.y); ctx.lineTo(target.x, target.y); ctx.stroke();
+						ctx.lineWidth = 2.5 + built.level * 1.3;
+						ctx.beginPath(); ctx.moveTo(muzzleX, muzzleY); ctx.lineTo(target.x, target.y); ctx.stroke();
+						ctx.strokeStyle = '#fef08a';
+						ctx.lineWidth = 1.2;
+						ctx.beginPath(); ctx.moveTo(muzzleX, muzzleY); ctx.lineTo(target.x, target.y); ctx.stroke();
 					}
 				}
 			} else {
+				ctx.fillStyle = '#0f172a';
+				ctx.strokeStyle = isSelected ? '#facc15' : '#64748b';
+				ctx.lineWidth = isSelected ? 3 : 2;
+				ctx.beginPath(); ctx.arc(slot.x, slot.y, 24, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 				ctx.fillStyle = '#64748b';
 				ctx.font = 'bold 16px sans-serif';
 				ctx.textAlign = 'center';
@@ -164,49 +205,71 @@
 			ctx.beginPath(); ctx.arc(m.x, m.y, 7, 0, Math.PI * 2); ctx.fill();
 		}
 
-		// Draw Allied Units (Robots & Exosuits)
+		// Draw Allied Units (Cropped Robot Sprite for robot_line units!)
 		for (const u of engine.units) {
-			ctx.fillStyle = u.towerType === 'robot_line' ? '#38bdf8' : '#10b981';
-			ctx.beginPath(); ctx.arc(u.x, u.y, 9, 0, Math.PI * 2); ctx.fill();
-			ctx.strokeStyle = '#0f172a';
-			ctx.lineWidth = 2;
-			ctx.stroke();
-
-			// Battery bar for robots
+			let drawn = false;
 			if (u.towerType === 'robot_line') {
-				ctx.fillStyle = '#facc15';
-				ctx.fillRect(u.x - 10, u.y - 14, 20 * (u.batteryTimer / u.maxBattery), 3);
+				drawn = sprites.drawCentered(ctx, 'robot_unit', u.x, u.y - 4, 30, 34, true);
 			}
-		}
-
-		// Draw Enemies
-		for (const e of engine.enemies) {
-			const cfg = ENEMIES[e.type];
-			ctx.fillStyle = cfg.color;
-			ctx.beginPath();
-			ctx.arc(e.x, e.y, cfg.radius, 0, Math.PI * 2);
-			ctx.fill();
-
-			if (cfg.domain === 'air') {
-				ctx.strokeStyle = '#f8fafc';
+			if (!drawn) {
+				ctx.fillStyle = u.towerType === 'robot_line' ? '#38bdf8' : '#10b981';
+				ctx.beginPath(); ctx.arc(u.x, u.y, 9, 0, Math.PI * 2); ctx.fill();
+				ctx.strokeStyle = '#0f172a';
 				ctx.lineWidth = 2;
 				ctx.stroke();
 			}
+
+			if (u.towerType === 'robot_line') {
+				ctx.fillStyle = '#facc15';
+				ctx.fillRect(u.x - 10, u.y - 22, 20 * (u.batteryTimer / u.maxBattery), 3);
+			}
+		}
+
+		// Draw Enemies (Glider & Armored Beetle use Concept Art Sprites!)
+		for (const e of engine.enemies) {
+			const cfg = ENEMIES[e.type];
+			const nextWp = wps[e.waypointIndex + 1];
+			const movingRight = nextWp ? nextWp.x >= e.x : true;
+
+			let drawn = false;
+			if (e.type === 'glider') {
+				// Air unit shadow
+				ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+				ctx.beginPath(); ctx.ellipse(e.x, e.y + 18, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
+				drawn = sprites.drawCentered(ctx, 'glider', e.x, e.y - 6, 58, 42, movingRight);
+			} else if (e.type === 'armored_beetle') {
+				drawn = sprites.drawCentered(ctx, 'armored_beetle', e.x, e.y - 4, 54, 40, movingRight);
+			}
+
+			if (!drawn) {
+				ctx.fillStyle = cfg.color;
+				ctx.beginPath();
+				ctx.arc(e.x, e.y, cfg.radius, 0, Math.PI * 2);
+				ctx.fill();
+
+				if (cfg.domain === 'air') {
+					ctx.strokeStyle = '#f8fafc';
+					ctx.lineWidth = 2;
+					ctx.stroke();
+				}
+			}
+
 			if (e.stunTimer > 0) {
 				ctx.strokeStyle = '#38bdf8';
-				ctx.lineWidth = 3;
-				ctx.stroke();
+				ctx.lineWidth = 2.5;
+				ctx.beginPath(); ctx.arc(e.x, e.y, cfg.radius + 6, 0, Math.PI * 2); ctx.stroke();
 			}
 
 			// Health bar
 			const hpPct = Math.max(0, e.hp / e.maxHp);
-			ctx.fillStyle = '#1e293b';
-			ctx.fillRect(e.x - 14, e.y - cfg.radius - 9, 28, 4);
+			const barY = e.y - (drawn ? 28 : cfg.radius + 9);
+			ctx.fillStyle = '#0f172a';
+			ctx.fillRect(e.x - 16, barY, 32, 4);
 			ctx.fillStyle = hpPct > 0.5 ? '#22c55e' : hpPct > 0.25 ? '#eab308' : '#ef4444';
-			ctx.fillRect(e.x - 14, e.y - cfg.radius - 9, 28 * hpPct, 4);
+			ctx.fillRect(e.x - 16, barY, 32 * hpPct, 4);
 		}
 
-		// Draw Heroes
+		// Draw Heroes (Fastener Specialist uses Concept Art Sprite!)
 		for (const h of engine.heroes) {
 			const cfg = HEROES[h.id];
 			const isSelected = game.activeHeroId === h.id;
@@ -214,20 +277,31 @@
 			if (isSelected) {
 				ctx.strokeStyle = '#facc15';
 				ctx.lineWidth = 2;
-				ctx.beginPath(); ctx.arc(h.x, h.y, 22, 0, Math.PI * 2); ctx.stroke();
+				ctx.beginPath(); ctx.ellipse(h.x, h.y + 12, 22, 10, 0, 0, Math.PI * 2); ctx.stroke();
 			}
 
-			ctx.fillStyle = h.respawnTimer > 0 ? '#475569' : cfg.color;
-			ctx.beginPath(); ctx.arc(h.x, h.y, 15, 0, Math.PI * 2); ctx.fill();
-			ctx.strokeStyle = '#ffffff';
-			ctx.lineWidth = 2;
-			ctx.stroke();
+			let drawn = false;
+			if (h.id === 'fastener_hero') {
+				ctx.save();
+				if (h.respawnTimer > 0) ctx.globalAlpha = 0.4;
+				drawn = sprites.drawCentered(ctx, 'fastener_hero', h.x, h.y - 10, 56, 52, h.targetX >= h.x);
+				ctx.restore();
+			}
+
+			if (!drawn) {
+				ctx.fillStyle = h.respawnTimer > 0 ? '#475569' : cfg.color;
+				ctx.beginPath(); ctx.arc(h.x, h.y, 15, 0, Math.PI * 2); ctx.fill();
+				ctx.strokeStyle = '#ffffff';
+				ctx.lineWidth = 2;
+				ctx.stroke();
+			}
 
 			const hpPct = Math.max(0, h.hp / h.maxHp);
+			const barY = h.y - (drawn ? 38 : 25);
 			ctx.fillStyle = '#0f172a';
-			ctx.fillRect(h.x - 18, h.y - 25, 36, 5);
+			ctx.fillRect(h.x - 18, barY, 36, 5);
 			ctx.fillStyle = '#38bdf8';
-			ctx.fillRect(h.x - 18, h.y - 25, 36 * hpPct, 5);
+			ctx.fillRect(h.x - 18, barY, 36 * hpPct, 5);
 		}
 
 		// Draw Visual Effects
@@ -255,6 +329,7 @@
 	}
 
 	onMount(() => {
+		sprites.loadAll();
 		let last = performance.now();
 		let raf: number;
 		let lastHudUpdate = performance.now();
