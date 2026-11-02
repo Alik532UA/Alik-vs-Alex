@@ -60,4 +60,3 @@ if (existsSync(viteConfigPath)) {
 }
 
 console.log(`[bump-version] Version synchronized: ${newVersion}`);
-

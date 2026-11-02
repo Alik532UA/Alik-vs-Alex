@@ -50,4 +50,3 @@ npm run build       # Збірка продакшн-версії та генер
 npm run check:build # Перевірка артефактів збірки
 npm run audit:ci    # Аудит безпеки залежностей npm
 ```
-

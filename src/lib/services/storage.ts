@@ -93,4 +93,3 @@ function createStore(area: 'localStorage' | 'sessionStorage') {
 
 export const storage = createStore('localStorage');
 export const sessionStore = createStore('sessionStorage');
-

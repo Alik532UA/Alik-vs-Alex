@@ -9,4 +9,3 @@ Guidelines for Gemini models working in the Alik-vs-Alex codebase.
   1. Read `PROJECT-CONTEXT.md` for conventions.
   2. Implement cleanly with TypeScript types.
   3. Verify with `npm run check && npm run lint && npm run test:unit`.
-

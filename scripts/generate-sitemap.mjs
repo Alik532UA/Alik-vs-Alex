@@ -64,4 +64,3 @@ ${urls}
 } catch (err) {
 	console.warn('[generate-sitemap] Skipped or failed:', err);
 }
-

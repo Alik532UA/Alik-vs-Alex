@@ -5,4 +5,3 @@ export const STORAGE_PREFIX =
 	typeof process !== 'undefined' && process.env?.NODE_ENV === 'development'
 		? 'alikvsalex-dev_'
 		: 'alikvsalex_';
-
