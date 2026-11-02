@@ -1,11 +1,20 @@
 {
 	"extends": "$app/tsconfig",
 	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
 		"strict": true,
+		"noImplicitReturns": true,
 		"paths": {
 			"$lib": ["./src/lib"],
 			"$lib/*": ["./src/lib/*"]
 		}
 	},
-	"include": ["src", "vite.config.ts"]
+	"include": ["src"],
+	"exclude": ["src/service-worker"]
 }

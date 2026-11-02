@@ -22,7 +22,8 @@ export type EnemyId =
 	| 'shield_bearer'
 	| 'broodmother';
 
-export type HeroId = 'fastener_hero' | 'exosuit_hero' | 'laser_hero' | 'flamer_hero' | 'chemist_hero';
+export type HeroId =
+	'fastener_hero' | 'exosuit_hero' | 'laser_hero' | 'flamer_hero' | 'chemist_hero';
 
 export interface Vec2 {
 	x: number;

@@ -1,48 +1,59 @@
-# Останній Корабель Колонії (Tower Defense)
+# Alik vs Sahko (Space Colony Tower Defense)
 
-Космічна 2D Tower Defense стратегія на Svelte 5 / SvelteKit / Tailwind CSS з концепт-артами промислових веж, героїв та мутантів фауни.
-
-## Графіка та спрайти (47 зображень)
-
-Всі заглушки замінено на повноцінні концепт-арти:
-- **Інженерні вежі (8 типів × 4 рівні = 32 арти)**: `static/assets/sprites/towers/`
-  - Бурова установка (`drill_1` .. `drill_4`)
-  - Горизонтальний сваєбій (`pile_driver_1` .. `pile_driver_4`)
-  - Гірничодобувний лазер (`mining_laser_1` .. `mining_laser_4`)
-  - Кріпильний метальник (`fastener_1` .. `fastener_4`)
-  - Платформа екзокостюмів (`exosuit_1` .. `exosuit_4`)
-  - Складальна лінія роботів (`robot_line_1` .. `robot_line_4`)
-  - Будівельний кран (`crane_1` .. `crane_4`)
-  - Укладальник мін (`mine_layer_1` .. `mine_layer_4`)
-- **Вороги колонії (10 видів)**: `static/assets/sprites/enemies/`
-  - Бігун (`runner`), Виводковик (`broodmother`), Панцирник (`armored_beetle`), Планер (`glider`), Плювальник (`spitter`), Стрибун (`jumper`), Спороносець (`spore_carrier`), Стайник (`pack_hound`), Важковаговик (`heavy_rhino`), Щитоносець (`shield_bearer`)
-- **Головні спеціалісти (5 героїв)**: `static/assets/sprites/heroes/`
-  - Макс / Монтажник (`fastener_hero`)
-  - Влад / Вогнеметник (`flamer_hero`)
-  - Борг / Оператор Екзо (`exosuit_hero`)
-  - Док / Хімік (`chemist_hero`)
-  - Ірина / Лазерниця (`laser_hero`)
-- **Союзні юніти**: роботи (`robot_unit`) та штурмові екзокостюми (`exosuit_unit`).
+Тактична 2D Tower Defense стратегія на базі **Svelte 5 / SvelteKit / Tailwind CSS / TypeScript / HTML5 Canvas 2D**.
+Сюжет: аварія на гірничодобувній базі далекої колонії. Інженери використовують переобладнані будівельні інструменти, дрони та екзокостюми для стримування навали чужорідних форм життя.
 
 ---
 
-## Developing
+## Ігрові особливості
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- **8 типів промислових веж** (кожна з 4 рівнями розвитку):
+  - _Шнековий перфоратор_ (`drill_1` .. `drill_4`)
+  - _Пальовий копер_ (`pile_driver_1` .. `pile_driver_4`)
+  - _Шахтний різак_ (`mining_laser_1` .. `mining_laser_4`)
+  - _Монтажник балок_ (`fastener_1` .. `fastener_4`)
+  - _Ангар екзоскелетів_ (`exosuit_1` .. `exosuit_4`)
+  - _Конвеєр дронів_ (`robot_line_1` .. `robot_line_4`)
+  - _Вантажний кран_ (`crane_1` .. `crane_4`)
+  - _Міноукладач_ (`mine_layer_1` .. `mine_layer_4`)
+- **10 архетипів ворогів**:
+  - _Бігун_ (`runner`), _Матриця_ (`broodmother`), _Броненосець_ (`armored_beetle`), _Планер_ (`glider`), _Плювач_ (`spitter`), _Стрибун_ (`jumper`), _Спороносець_ (`spore_carrier`), _Гончак_ (`pack_hound`), _Носоріг_ (`heavy_rhino`), _Щитоносець_ (`shield_bearer`).
+- **5 спеціалізованих героїв**:
+  - `fastener_hero`, `flamer_hero`, `exosuit_hero`, `chemist_hero`, `laser_hero`.
+
+---
+
+## Розробка та команди якості
 
 ```sh
+# Встановлення залежностей
+npm install
+
+# Запуск сервера розробки
 npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+# Перевірка типів Svelte 5 & TypeScript
+npm run check
 
-## Building
+# Лінтинг коду та форматування
+npm run lint
 
-To create a production version of your app:
+# Автоформатування коду
+npm run format
 
-```sh
+# Запуск юніт-тестів
+npm run test:unit
+
+# Збірка продакшн-версії для GitHub Pages
 npm run build
+
+# Перевірка артефактів збірки
+npm run check:build
 ```
 
-You can preview the production build with `npm run preview`.
+---
+
+## Документація для AI-асистентів
+
+- [PROJECT-CONTEXT.md](PROJECT-CONTEXT.md) — повний технічний контекст, інваріанти безпеки та CSP.
+- [AGENTS.md](AGENTS.md) — практичні інструкції для AI-агентів.

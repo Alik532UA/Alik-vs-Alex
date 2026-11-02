@@ -1,0 +1,53 @@
+---
+Назва: AGENTS.md — контекст проєкту Alik-vs-Alex
+Опис: Канонічні інструкції для будь-якого AI-асистента в цьому репозиторії
+---
+
+# AGENTS.md — Alik vs Sahko (Space Colony Tower Defense)
+
+> **Спершу прочитай [PROJECT-CONTEXT.md](PROJECT-CONTEXT.md).** Там зафіксовано архітектурні інваріанти за каноном v10: параметри адресації, префікси сховища, SEO-політика, політика безпеки (CSP), ігрові механіки та стандарти якості. Цей файл — практична витримка для щоденної роботи агентів.
+
+---
+
+## 1. Що це за проєкт
+
+Тактична науково-фантастична 2D-стратегія **Alik vs Sahko** (Tower Defense) на базі Svelte 5 (Runes), Tailwind CSS v4, TypeScript та HTML5 Canvas.
+
+- **Основні механіки**: 8 типів індустріальних веж із 4 рівнями модернізації, 10 архетипів ворогів з унікальними здібностями (щити, спори, стрибки), 5 спеціалізованих героїв-інженерів, симуляція на базі `requestAnimationFrame` та Canvas 2D.
+- **Стек**: SvelteKit 3 (`@sveltejs/kit`), Svelte 5 (Runes), TypeScript 6, `@sveltejs/adapter-static`, `@tailwindcss/vite`.
+- **Хостинг**: GitHub Pages (`https://alik532ua.github.io/Alik-vs-Alex/`).
+
+---
+
+## 2. Ключові архітектурні інваріанти
+
+1. **Svelte 5 Runes (виключно):**
+   - Жодного застарілого синтаксису Svelte 4 (`export let`, `$:`, `<slot>`).
+   - Використовувати виключно `$state`, `$state.raw`, `$derived`, `$props`, `$effect`, snippets (`{#snippet ...}`).
+2. **Сховище та ізоляція:**
+   - Префікси: `alikvsalex_` (prod), `alikvsalex-dev_` (dev).
+   - Пряме звернення до `localStorage` повз узгоджений фасад `$lib/services/storage.ts` заборонено (STORAGE-NAMESPACE-v10).
+3. **Безпека (CSP & XSS):**
+   - Усі інлайн-скрипти автоматично хешуються SHA-256 у `vite.config.ts`. Інваріант контролює юніт-тест `src/csp-hash.test.ts`.
+   - Заборонено небезпечне використання `{@html}` без санітизації (контролюється `src/security.test.ts`).
+4. **Ігровий рушій (`src/lib/game/`):**
+   - Бізнес-логіка бою та симуляції (`engine.ts`) відокремлена від UI (`state.svelte.ts`) та конфігів (`configs.ts`).
+   - Чистий ігровий цикл не повинен викликати DOM-маніпуляції напряму — тільки Canvas context або реактивні поля стану.
+5. **Автоматизація версіонування:**
+   - Pre-commit хук Husky автоматично піднімає patch-версію `+0.0.1` через `scripts/bump-version.mjs` після проходження тестів та перевірки типів.
+
+---
+
+## 3. Корисні команди для розробки
+
+```sh
+npm run dev         # Запуск сервера локальної розробки
+npm run check       # Перевірка типів Svelte 5 та TypeScript
+npm run lint        # Повний лінтинг коду та форматування (Prettier + ESLint)
+npm run format      # Автоматичне виправлення форматування коду
+npm run test:unit   # Запуск юніт-тестів Vitest
+npm run build       # Збірка продакшн-версії та генерація sitemap.xml
+npm run check:build # Перевірка артефактів збірки
+npm run audit:ci    # Аудит безпеки залежностей npm
+```
+

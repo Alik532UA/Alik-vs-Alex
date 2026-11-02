@@ -1,0 +1,14 @@
+# Alik vs Sahko — Space Colony Tower Defense
+
+> Tactical Sci-Fi 2D Tower Defense game built with Svelte 5 (Runes), Tailwind CSS, and HTML5 Canvas.
+
+## About The Game
+Defend the colony workshop against waves of alien invaders using repurposed industrial machinery, robotic sentries, and tactical hero engineers.
+
+- **Stack**: Svelte 5 (Runes), TypeScript, Tailwind CSS, Vite, HTML5 Canvas 2D.
+- **Towers**: 8 industrial tower types with 4 progression levels (Drill, Pile Driver, Mining Laser, Fastener, Exosuit, Robot Line, Crane, Mine Layer).
+- **Enemies**: 10 alien archetypes (Runner, Broodmother, Armored Beetle, Glider, Spitter, Jumper, Spore Carrier, Pack Hound, Heavy Rhino, Shield Bearer).
+- **Heroes**: 5 specialist units (Fastener Hero, Flamer Hero, Exosuit Hero, Chemist Hero, Laser Hero).
+- **Hosting**: GitHub Pages (`https://alik532ua.github.io/Alik-vs-Alex/`).
+- **Storage Prefix**: `alikvsalex_` (isolated local web storage).
+

@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# Pre-commit checks & automatic version bump (+0.0.1)
+
+npm run test:unit || exit 1
+npm run check || exit 1
+
+STAGED=$(git show :package.json 2>/dev/null | node -p 'JSON.parse(require("fs").readFileSync(0,"utf8")).version' 2>/dev/null || echo '')
+HEAD_V=$(git show HEAD:package.json 2>/dev/null | node -p 'JSON.parse(require("fs").readFileSync(0,"utf8")).version' 2>/dev/null || echo '')
+
+if [ "$STAGED" = "$HEAD_V" ]; then
+	node scripts/bump-version.mjs
+else
+	node scripts/bump-version.mjs --sync-only
+fi
+
+git add package.json package-lock.json static/app-version.json src/lib/config/version.ts 2>/dev/null || true
+

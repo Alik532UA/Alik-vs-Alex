@@ -1,5 +1,5 @@
-import { MISSION_01, TOWERS, HEROES, ENEMIES } from './configs';
-import type { TowerId, HeroId, Vec2, TowerSlot } from './types';
+import { MISSION_01 } from './configs';
+import type { TowerId, HeroId } from './types';
 
 export type ScreenMode = 'menu' | 'loadout' | 'briefing' | 'playing';
 

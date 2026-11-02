@@ -267,8 +267,14 @@ export class TDGameEngine {
 			if (target) {
 				this.dealDamage(target, 280, 0.8);
 				this.effects.push({
-					x: hero.x, y: hero.y, targetX: target.x, targetY: target.y,
-					color: '#ef4444', ttl: 0.4, maxTtl: 0.4, kind: 'beam'
+					x: hero.x,
+					y: hero.y,
+					targetX: target.x,
+					targetY: target.y,
+					color: '#ef4444',
+					ttl: 0.4,
+					maxTtl: 0.4,
+					kind: 'beam'
 				});
 			}
 		} else if (heroId === 'flamer_hero') {
@@ -357,7 +363,8 @@ export class TDGameEngine {
 			const dx = b.x - a.x;
 			const dy = b.y - a.y;
 			const lenSq = dx * dx + dy * dy;
-			const t = lenSq === 0 ? 0 : Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / lenSq));
+			const t =
+				lenSq === 0 ? 0 : Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / lenSq));
 			const px = a.x + t * dx;
 			const py = a.y + t * dy;
 			const d = Math.hypot(px - x, py - y);
@@ -406,7 +413,10 @@ export class TDGameEngine {
 			const cfg = ENEMIES[e.type];
 			if (cfg.shieldAuraRadius) {
 				for (const other of this.enemies) {
-					if (other.uid !== e.uid && Math.hypot(other.x - e.x, other.y - e.y) <= cfg.shieldAuraRadius) {
+					if (
+						other.uid !== e.uid &&
+						Math.hypot(other.x - e.x, other.y - e.y) <= cfg.shieldAuraRadius
+					) {
 						other.shieldedTimer = 0.3;
 					}
 				}
@@ -429,7 +439,12 @@ export class TDGameEngine {
 				e.spawnTimer -= dt;
 				if (e.spawnTimer <= 0) {
 					e.spawnTimer = cfg.periodicSpawn.interval;
-					this.spawnEnemy(cfg.periodicSpawn.id, { x: e.x, y: e.y }, e.waypointIndex, e.distanceTraveled);
+					this.spawnEnemy(
+						cfg.periodicSpawn.id,
+						{ x: e.x, y: e.y },
+						e.waypointIndex,
+						e.distanceTraveled
+					);
 				}
 			}
 
@@ -443,7 +458,13 @@ export class TDGameEngine {
 					e.jumpTimer = cfg.jumpCooldown ?? 4.5;
 					e.blockedByUnitUid = null;
 					this.effects.push({
-						x: e.x, y: e.y - 12, color: '#eab308', ttl: 0.5, maxTtl: 0.5, kind: 'text', text: 'СТРИБОК!'
+						x: e.x,
+						y: e.y - 12,
+						color: '#eab308',
+						ttl: 0.5,
+						maxTtl: 0.5,
+						kind: 'text',
+						text: 'СТРИБОК!'
 					});
 				} else {
 					e.attackTimer -= dt;
@@ -462,13 +483,21 @@ export class TDGameEngine {
 			// Ranged Spitter attacks nearby allied units
 			if (cfg.rangedDamage && cfg.rangedRange) {
 				e.attackTimer -= dt;
-				const unitTarget = this.units.find((u) => Math.hypot(u.x - e.x, u.y - e.y) <= cfg.rangedRange!);
+				const unitTarget = this.units.find(
+					(u) => Math.hypot(u.x - e.x, u.y - e.y) <= cfg.rangedRange!
+				);
 				if (unitTarget && e.attackTimer <= 0) {
 					e.attackTimer = 1.4;
 					unitTarget.hp -= cfg.rangedDamage;
 					this.effects.push({
-						x: e.x, y: e.y, targetX: unitTarget.x, targetY: unitTarget.y,
-						color: '#84cc16', ttl: 0.15, maxTtl: 0.15, kind: 'beam'
+						x: e.x,
+						y: e.y,
+						targetX: unitTarget.x,
+						targetY: unitTarget.y,
+						color: '#84cc16',
+						ttl: 0.15,
+						maxTtl: 0.15,
+						kind: 'beam'
 					});
 					if (unitTarget.hp <= 0) this.handleUnitKilledByEnemy(unitTarget, e);
 				}
@@ -593,8 +622,13 @@ export class TDGameEngine {
 						this.dealDamage(t, stats.damage, 0);
 					}
 					this.effects.push({
-						x: tower.x, y: tower.y, radius: stats.range,
-						color: cfg.color, ttl: 0.3, maxTtl: 0.3, kind: 'circle'
+						x: tower.x,
+						y: tower.y,
+						radius: stats.range,
+						color: cfg.color,
+						ttl: 0.3,
+						maxTtl: 0.3,
+						kind: 'circle'
 					});
 				} else if (tower.type === 'crane') {
 					const primary = validTargets[0];
@@ -607,8 +641,13 @@ export class TDGameEngine {
 						}
 					}
 					this.effects.push({
-						x: primary.x, y: primary.y, radius: stats.aoeRadius ?? 70,
-						color: cfg.color, ttl: 0.35, maxTtl: 0.35, kind: 'circle'
+						x: primary.x,
+						y: primary.y,
+						radius: stats.aoeRadius ?? 70,
+						color: cfg.color,
+						ttl: 0.35,
+						maxTtl: 0.35,
+						kind: 'circle'
 					});
 				} else {
 					// Fastener or Horizontal Pile Driver
@@ -618,8 +657,14 @@ export class TDGameEngine {
 							: validTargets[0];
 					this.dealDamage(primary, stats.damage, stats.armorPierce ?? 0);
 					this.effects.push({
-						x: tower.x, y: tower.y, targetX: primary.x, targetY: primary.y,
-						color: cfg.color, ttl: 0.14, maxTtl: 0.14, kind: 'beam'
+						x: tower.x,
+						y: tower.y,
+						targetX: primary.x,
+						targetY: primary.y,
+						color: cfg.color,
+						ttl: 0.14,
+						maxTtl: 0.14,
+						kind: 'beam'
 					});
 				}
 			}
@@ -665,13 +710,21 @@ export class TDGameEngine {
 			);
 			if (trigger) {
 				for (const e of [...this.enemies]) {
-					if (ENEMIES[e.type].domain === 'ground' && Math.hypot(e.x - m.x, e.y - m.y) <= m.aoeRadius) {
+					if (
+						ENEMIES[e.type].domain === 'ground' &&
+						Math.hypot(e.x - m.x, e.y - m.y) <= m.aoeRadius
+					) {
 						this.dealDamage(e, m.damage, 0.3);
 					}
 				}
 				this.effects.push({
-					x: m.x, y: m.y, radius: m.aoeRadius,
-					color: '#a855f7', ttl: 0.35, maxTtl: 0.35, kind: 'circle'
+					x: m.x,
+					y: m.y,
+					radius: m.aoeRadius,
+					color: '#a855f7',
+					ttl: 0.35,
+					maxTtl: 0.35,
+					kind: 'circle'
 				});
 				this.mines = this.mines.filter((mine) => mine.uid !== m.uid);
 			}
@@ -711,8 +764,14 @@ export class TDGameEngine {
 					h.attackTimer = cfg.attackCooldown;
 					this.dealDamage(target, cfg.damage, 0.25);
 					this.effects.push({
-						x: h.x, y: h.y, targetX: target.x, targetY: target.y,
-						color: cfg.color, ttl: 0.12, maxTtl: 0.12, kind: 'beam'
+						x: h.x,
+						y: h.y,
+						targetX: target.x,
+						targetY: target.y,
+						color: cfg.color,
+						ttl: 0.12,
+						maxTtl: 0.12,
+						kind: 'beam'
 					});
 				}
 			}
