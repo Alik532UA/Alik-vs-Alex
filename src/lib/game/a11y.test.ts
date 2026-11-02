@@ -33,4 +33,3 @@ describe('Game Accessibility (a11y & Grid Navigation)', () => {
 		expect(a11y.getAnnouncement()).toContain('Wave 5 / 10');
 	});
 });
-

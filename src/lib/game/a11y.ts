@@ -56,4 +56,3 @@ export class GameAccessibilityManager {
 }
 
 export const gameA11y = new GameAccessibilityManager();
-

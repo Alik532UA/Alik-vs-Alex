@@ -102,4 +102,3 @@ export function isCellBuildable(map: GameMap, x: number, y: number): boolean {
 	}
 	return true;
 }
-

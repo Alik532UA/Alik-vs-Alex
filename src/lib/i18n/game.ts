@@ -63,4 +63,3 @@ export function getTranslation(locale: GameLocale = 'uk'): GameTranslations {
 	if (!t) return GAME_I18N.uk;
 	return t;
 }
-

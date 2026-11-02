@@ -25,4 +25,3 @@ describe('Game Internationalization (i18n Parity & Scalability)', () => {
 		expect(fallback.title).toBe(GAME_I18N.uk.title);
 	});
 });
-

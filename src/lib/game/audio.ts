@@ -1,11 +1,5 @@
 export type SoundEffect =
-	| 'laser_shot'
-	| 'explosion'
-	| 'tower_build'
-	| 'wave_alert'
-	| 'defeat'
-	| 'victory'
-	| 'click';
+	'laser_shot' | 'explosion' | 'tower_build' | 'wave_alert' | 'defeat' | 'victory' | 'click';
 
 export class GameAudioManager {
 	private ctx: AudioContext | null = null;
@@ -124,4 +118,3 @@ export class GameAudioManager {
 }
 
 export const gameAudio = new GameAudioManager(0.5);
-

@@ -39,4 +39,3 @@ describe('Game Maps & Grid System (Scalability & Routing)', () => {
 		expect(isCellBuildable(map, map.gridWidth + 5, 0)).toBe(false);
 	});
 });
-
