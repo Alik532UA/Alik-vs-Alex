@@ -9,6 +9,7 @@ export default defineConfig({
 	plugins: [svelte()],
 	test: {
 		environment: 'node',
+		pool: 'forks',
 		include: ['src/**/*.test.ts']
 	},
 	resolve: {
