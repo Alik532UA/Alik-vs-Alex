@@ -1,36 +1,30 @@
-# sv
+# Останній Корабель Колонії (Tower Defense)
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Космічна 2D Tower Defense стратегія на Svelte 5 / SvelteKit / Tailwind CSS з концепт-артами промислових веж, героїв та мутантів фауни.
 
-## Creating a project
+## Графіка та спрайти (47 зображень)
 
-If you're seeing this, you've probably already done this step. Congrats!
+Всі заглушки замінено на повноцінні концепт-арти:
+- **Інженерні вежі (8 типів × 4 рівні = 32 арти)**: `static/assets/sprites/towers/`
+  - Бурова установка (`drill_1` .. `drill_4`)
+  - Горизонтальний сваєбій (`pile_driver_1` .. `pile_driver_4`)
+  - Гірничодобувний лазер (`mining_laser_1` .. `mining_laser_4`)
+  - Кріпильний метальник (`fastener_1` .. `fastener_4`)
+  - Платформа екзокостюмів (`exosuit_1` .. `exosuit_4`)
+  - Складальна лінія роботів (`robot_line_1` .. `robot_line_4`)
+  - Будівельний кран (`crane_1` .. `crane_4`)
+  - Укладальник мін (`mine_layer_1` .. `mine_layer_4`)
+- **Вороги колонії (10 видів)**: `static/assets/sprites/enemies/`
+  - Бігун (`runner`), Виводковик (`broodmother`), Панцирник (`armored_beetle`), Планер (`glider`), Плювальник (`spitter`), Стрибун (`jumper`), Спороносець (`spore_carrier`), Стайник (`pack_hound`), Важковаговик (`heavy_rhino`), Щитоносець (`shield_bearer`)
+- **Головні спеціалісти (5 героїв)**: `static/assets/sprites/heroes/`
+  - Макс / Монтажник (`fastener_hero`)
+  - Влад / Вогнеметник (`flamer_hero`)
+  - Борг / Оператор Екзо (`exosuit_hero`)
+  - Док / Хімік (`chemist_hero`)
+  - Ірина / Лазерниця (`laser_hero`)
+- **Союзні юніти**: роботи (`robot_unit`) та штурмові екзокостюми (`exosuit_unit`).
 
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv@1.1.1 create --template minimal --types ts --add tailwindcss="plugins:none" sveltekit-adapter="adapter:static" --install npm ./
-```
-
-## Adding features
-
-Add features to your project with `sv add`:
-
-```sh
-npx sv add
-```
-
-For example, to add Tailwind CSS:
-
-```sh
-npx sv add tailwindcss
-```
+---
 
 ## Developing
 

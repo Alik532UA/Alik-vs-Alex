@@ -4,15 +4,30 @@
 	import { TOWERS, HEROES, ENEMIES } from '$lib/game/configs';
 	import { TDGameEngine } from '$lib/game/engine';
 	import type { ActiveEnemy } from '$lib/game/engine';
-	import { sprites, type SpriteKey } from '$lib/game/sprites';
-	import type { TowerId, HeroId, TowerConfig, HeroConfig } from '$lib/game/types';
+	import { sprites, getTowerAssetPath, getEnemyAssetPath, getHeroAssetPath } from '$lib/game/sprites';
+	import type { TowerId, HeroId, TowerConfig, HeroConfig, EnemyConfig } from '$lib/game/types';
+	import { asset } from '$app/paths';
 
 	const towerList: TowerConfig[] = Object.values(TOWERS);
 	const heroList: HeroConfig[] = Object.values(HEROES);
+	const enemyList: EnemyConfig[] = Object.values(ENEMIES);
 
 	let canvas = $state<HTMLCanvasElement | null>(null);
 	const engine = new TDGameEngine();
 	let hudTick = $state(0);
+
+	let encyclopediaOpen = $state(false);
+	let encyclopediaTab = $state<'towers' | 'enemies' | 'heroes'>('towers');
+	let selectedEncyclopediaTowerId = $state<TowerId>('drill');
+
+	function getSpeakerHeroId(speaker: string): HeroId | null {
+		if (speaker.includes('Макс')) return 'fastener_hero';
+		if (speaker.includes('Борг')) return 'exosuit_hero';
+		if (speaker.includes('Ірина')) return 'laser_hero';
+		if (speaker.includes('Влад')) return 'flamer_hero';
+		if (speaker.includes('Док')) return 'chemist_hero';
+		return null;
+	}
 
 	function beginBriefing() {
 		game.screen = 'briefing';
@@ -111,7 +126,7 @@
 			ctx.beginPath(); ctx.arc(exit.x, exit.y, 22, 0, Math.PI * 2); ctx.fill();
 		}
 
-		// Draw Tower Slots & Built Towers (with Concept Art Sprites!)
+		// Draw Tower Slots & Built Towers (with Level 1..4 Sprites!)
 		for (const slot of game.mission.towerSlots) {
 			const built = engine.towers.get(slot.id);
 			const isSelected = game.activeSlotId === slot.id;
@@ -135,15 +150,28 @@
 					if (t && t.x > slot.x) faceRight = true;
 				}
 
-				if (built.type === 'mining_laser' || built.type === 'drill' || built.type === 'robot_line') {
-					const scale = 1 + (built.level - 1) * 0.06;
+				// Look for level-specific sprite: e.g. "drill_1", "drill_2", etc.
+				const levelKey = `${built.type}_${built.level}`;
+				const scale = 1 + (built.level - 1) * 0.05;
+				drawnSprite = sprites.drawCentered(
+					ctx,
+					levelKey,
+					slot.x,
+					slot.y - 8,
+					80 * scale,
+					72 * scale,
+					faceRight
+				);
+
+				// Fallback to base tower sprite if level sprite missing
+				if (!drawnSprite) {
 					drawnSprite = sprites.drawCentered(
 						ctx,
-						built.type as SpriteKey,
+						built.type,
 						slot.x,
-						slot.y - 6,
-						78 * scale,
-						64 * scale,
+						slot.y - 8,
+						80 * scale,
+						72 * scale,
 						faceRight
 					);
 				}
@@ -178,7 +206,7 @@
 					const target = engine.enemies.find((e: ActiveEnemy) => e.uid === built.laserTargetUid);
 					if (target) {
 						const muzzleX = slot.x + (faceRight ? 26 : -26);
-						const muzzleY = slot.y - 10;
+						const muzzleY = slot.y - 12;
 						ctx.strokeStyle = '#ef4444';
 						ctx.lineWidth = 2.5 + built.level * 1.3;
 						ctx.beginPath(); ctx.moveTo(muzzleX, muzzleY); ctx.lineTo(target.x, target.y); ctx.stroke();
@@ -205,12 +233,15 @@
 			ctx.beginPath(); ctx.arc(m.x, m.y, 7, 0, Math.PI * 2); ctx.fill();
 		}
 
-		// Draw Allied Units (Cropped Robot Sprite for robot_line units!)
+		// Draw Allied Units (Robots & Exosuits)
 		for (const u of engine.units) {
 			let drawn = false;
 			if (u.towerType === 'robot_line') {
-				drawn = sprites.drawCentered(ctx, 'robot_unit', u.x, u.y - 4, 30, 34, true);
+				drawn = sprites.drawCentered(ctx, 'robot_unit', u.x, u.y - 4, 32, 36, true);
+			} else if (u.towerType === 'exosuit') {
+				drawn = sprites.drawCentered(ctx, 'exosuit_unit', u.x, u.y - 6, 38, 42, true);
 			}
+
 			if (!drawn) {
 				ctx.fillStyle = u.towerType === 'robot_line' ? '#38bdf8' : '#10b981';
 				ctx.beginPath(); ctx.arc(u.x, u.y, 9, 0, Math.PI * 2); ctx.fill();
@@ -225,21 +256,26 @@
 			}
 		}
 
-		// Draw Enemies (Glider & Armored Beetle use Concept Art Sprites!)
+		// Draw Enemies (All 10 Colony Fauna types with Authentic Sprites!)
 		for (const e of engine.enemies) {
 			const cfg = ENEMIES[e.type];
 			const nextWp = wps[e.waypointIndex + 1];
 			const movingRight = nextWp ? nextWp.x >= e.x : true;
 
-			let drawn = false;
-			if (e.type === 'glider') {
-				// Air unit shadow
+			// Air unit shadow
+			if (cfg.domain === 'air') {
 				ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
-				ctx.beginPath(); ctx.ellipse(e.x, e.y + 18, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
-				drawn = sprites.drawCentered(ctx, 'glider', e.x, e.y - 6, 58, 42, movingRight);
-			} else if (e.type === 'armored_beetle') {
-				drawn = sprites.drawCentered(ctx, 'armored_beetle', e.x, e.y - 4, 54, 40, movingRight);
+				ctx.beginPath();
+				ctx.ellipse(e.x, e.y + 18, cfg.radius * 1.1, cfg.radius * 0.45, 0, 0, Math.PI * 2);
+				ctx.fill();
 			}
+
+			// Size dimensions scaled to unit radius
+			const spriteW = Math.max(44, cfg.radius * 3.4);
+			const spriteH = Math.max(36, cfg.radius * 2.8);
+			const offsetY = cfg.domain === 'air' ? -8 : -4;
+
+			const drawn = sprites.drawCentered(ctx, e.type, e.x, e.y + offsetY, spriteW, spriteH, movingRight);
 
 			if (!drawn) {
 				ctx.fillStyle = cfg.color;
@@ -254,6 +290,17 @@
 				}
 			}
 
+			// Shield aura for shield bearer
+			if (cfg.shieldAuraRadius) {
+				ctx.strokeStyle = 'rgba(6, 182, 212, 0.35)';
+				ctx.lineWidth = 2;
+				ctx.setLineDash([4, 4]);
+				ctx.beginPath();
+				ctx.arc(e.x, e.y, cfg.shieldAuraRadius, 0, Math.PI * 2);
+				ctx.stroke();
+				ctx.setLineDash([]);
+			}
+
 			if (e.stunTimer > 0) {
 				ctx.strokeStyle = '#38bdf8';
 				ctx.lineWidth = 2.5;
@@ -262,14 +309,14 @@
 
 			// Health bar
 			const hpPct = Math.max(0, e.hp / e.maxHp);
-			const barY = e.y - (drawn ? 28 : cfg.radius + 9);
+			const barY = e.y - (drawn ? (cfg.domain === 'air' ? 30 : 26) : cfg.radius + 9);
 			ctx.fillStyle = '#0f172a';
 			ctx.fillRect(e.x - 16, barY, 32, 4);
 			ctx.fillStyle = hpPct > 0.5 ? '#22c55e' : hpPct > 0.25 ? '#eab308' : '#ef4444';
 			ctx.fillRect(e.x - 16, barY, 32 * hpPct, 4);
 		}
 
-		// Draw Heroes (Fastener Specialist uses Concept Art Sprite!)
+		// Draw Heroes (All 5 Specialists with Authentic Sprites!)
 		for (const h of engine.heroes) {
 			const cfg = HEROES[h.id];
 			const isSelected = game.activeHeroId === h.id;
@@ -280,13 +327,10 @@
 				ctx.beginPath(); ctx.ellipse(h.x, h.y + 12, 22, 10, 0, 0, Math.PI * 2); ctx.stroke();
 			}
 
-			let drawn = false;
-			if (h.id === 'fastener_hero') {
-				ctx.save();
-				if (h.respawnTimer > 0) ctx.globalAlpha = 0.4;
-				drawn = sprites.drawCentered(ctx, 'fastener_hero', h.x, h.y - 10, 56, 52, h.targetX >= h.x);
-				ctx.restore();
-			}
+			ctx.save();
+			if (h.respawnTimer > 0) ctx.globalAlpha = 0.4;
+			const drawn = sprites.drawCentered(ctx, h.id, h.x, h.y - 10, 58, 54, h.targetX >= h.x);
+			ctx.restore();
 
 			if (!drawn) {
 				ctx.fillStyle = h.respawnTimer > 0 ? '#475569' : cfg.color;
@@ -359,7 +403,7 @@
 		<div class="max-w-4xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl space-y-6">
 			<div class="flex items-center justify-between border-b border-slate-800 pb-4">
 				<div>
-					<span class="text-xs font-bold uppercase tracking-widest text-amber-400">Космічна Tower Defense • Прототип</span>
+					<span class="text-xs font-bold uppercase tracking-widest text-amber-400">Космічна Tower Defense • Повна графіка</span>
 					<h1 class="text-4xl font-extrabold mt-1">ОСТАННІЙ КОРАБЕЛЬ КОЛОНІЇ</h1>
 					<p class="text-slate-400 mt-1">Цивільні спеціалісти перетворюють промислові інструменти на зброю</p>
 				</div>
@@ -393,7 +437,13 @@
 				</div>
 			</div>
 
-			<div class="flex justify-end pt-2">
+			<div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+				<button
+					onclick={() => (encyclopediaOpen = true)}
+					class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 font-bold text-sm transition cursor-pointer flex items-center gap-2"
+				>
+					<span>📖 Довідник обладнання та фауни (47 артів)</span>
+				</button>
 				<button
 					onclick={() => (game.screen = 'loadout')}
 					class="px-8 py-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-lg transition cursor-pointer"
@@ -410,9 +460,13 @@
 					<h2 class="text-2xl font-bold">Комплектація загону перед місією</h2>
 					<p class="text-slate-400 text-sm">Оберіть до 5 промислових установок ({game.selectedTowers.length}/5) та 2 героїв ({game.selectedHeroes.length}/2)</p>
 				</div>
-				<button onclick={() => (game.screen = 'menu')} class="text-sm text-slate-400 hover:text-white cursor-pointer">← Назад у меню</button>
+				<div class="flex items-center gap-3">
+					<button onclick={() => (encyclopediaOpen = true)} class="text-xs text-amber-400 hover:underline cursor-pointer">📖 Довідник</button>
+					<button onclick={() => (game.screen = 'menu')} class="text-sm text-slate-400 hover:text-white cursor-pointer">← Назад у меню</button>
+				</div>
 			</div>
 
+			<!-- Towers Selection Grid with Real Artwork -->
 			<div>
 				<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">Інженерні вежі (Оберіть до 5 з 8)</h3>
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -420,18 +474,24 @@
 						{@const active = game.selectedTowers.includes(t.id)}
 						<button
 							onclick={() => game.toggleTowerInLoadout(t.id)}
-							class="p-3 rounded-xl border text-left transition cursor-pointer {active ? 'bg-slate-800 border-amber-400 ring-2 ring-amber-400/30' : 'bg-slate-950/60 border-slate-800 opacity-70 hover:opacity-100'}"
+							class="p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between {active ? 'bg-slate-800/90 border-amber-400 ring-2 ring-amber-400/30 shadow-lg' : 'bg-slate-950/60 border-slate-800 opacity-75 hover:opacity-100'}"
 						>
-							<div class="flex items-center justify-between">
-								<span class="font-bold text-sm" style="color: {t.color}">{t.name}</span>
-								<span class="text-xs px-2 py-0.5 rounded bg-slate-900">{t.levels[0].cost}⚡</span>
+							<div class="w-full h-24 rounded-lg bg-slate-950/80 border border-slate-800/80 flex items-center justify-center p-1.5 mb-2 overflow-hidden">
+								<img src={asset(getTowerAssetPath(t.id, 1))} alt={t.name} class="max-w-full max-h-full object-contain drop-shadow" />
 							</div>
-							<p class="text-xs text-slate-400 mt-1">{t.role}</p>
+							<div>
+								<div class="flex items-center justify-between gap-1">
+									<span class="font-bold text-xs truncate" style="color: {t.color}">{t.name}</span>
+									<span class="text-[11px] px-1.5 py-0.5 rounded bg-slate-900 font-bold shrink-0 text-amber-400">{t.levels[0].cost}⚡</span>
+								</div>
+								<p class="text-[11px] text-slate-400 mt-1 line-clamp-2">{t.role}</p>
+							</div>
 						</button>
 					{/each}
 				</div>
 			</div>
 
+			<!-- Heroes Selection Grid with Real Portraits -->
 			<div>
 				<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">Головні спеціалісти (Оберіть 2 з 5)</h3>
 				<div class="grid grid-cols-1 md:grid-cols-5 gap-3">
@@ -439,12 +499,17 @@
 						{@const active = game.selectedHeroes.includes(h.id)}
 						<button
 							onclick={() => game.toggleHeroInLoadout(h.id)}
-							class="p-3 rounded-xl border text-left transition cursor-pointer {active ? 'bg-slate-800 border-emerald-400 ring-2 ring-emerald-400/30' : 'bg-slate-950/60 border-slate-800 opacity-70 hover:opacity-100'}"
+							class="p-3 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between {active ? 'bg-slate-800/90 border-emerald-400 ring-2 ring-emerald-400/30 shadow-lg' : 'bg-slate-950/60 border-slate-800 opacity-75 hover:opacity-100'}"
 						>
-							<div class="font-bold text-sm" style="color: {h.color}">{h.name}</div>
-							<div class="text-[11px] text-slate-400">{h.profession}</div>
-							<div class="mt-2 text-xs text-emerald-300 font-semibold">★ {h.abilityName}</div>
-							<div class="text-[11px] text-slate-400">{h.abilityDesc}</div>
+							<div class="w-full h-28 rounded-lg bg-slate-950/80 border border-slate-800/80 flex items-center justify-center p-1 mb-2 overflow-hidden">
+								<img src={asset(getHeroAssetPath(h.id))} alt={h.name} class="max-w-full max-h-full object-contain drop-shadow" />
+							</div>
+							<div>
+								<div class="font-bold text-xs truncate" style="color: {h.color}">{h.name}</div>
+								<div class="text-[11px] text-slate-400 truncate">{h.profession}</div>
+								<div class="mt-2 text-xs text-emerald-300 font-semibold truncate">★ {h.abilityName}</div>
+								<div class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">{h.abilityDesc}</div>
+							</div>
 						</button>
 					{/each}
 				</div>
@@ -468,9 +533,17 @@
 
 			<div class="space-y-3 py-3">
 				{#each game.mission.preMissionDialogue as line}
-					<div class="p-4 rounded-xl bg-slate-950 border-l-4" style="border-color: {line.color}">
-						<div class="text-sm font-bold" style="color: {line.color}">{line.speaker} <span class="text-xs text-slate-500">({line.role})</span></div>
-						<p class="text-slate-200 text-sm mt-1">«{line.text}»</p>
+					{@const hid = getSpeakerHeroId(line.speaker)}
+					<div class="p-4 rounded-xl bg-slate-950 border-l-4 flex gap-4 items-center" style="border-color: {line.color}">
+						{#if hid}
+							<div class="w-14 h-14 shrink-0 rounded-xl bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center p-1 shadow-md">
+								<img src={asset(getHeroAssetPath(hid))} alt={line.speaker} class="max-w-full max-h-full object-contain" />
+							</div>
+						{/if}
+						<div class="flex-1 min-w-0">
+							<div class="text-sm font-bold" style="color: {line.color}">{line.speaker} <span class="text-xs text-slate-500">({line.role})</span></div>
+							<p class="text-slate-200 text-sm mt-1">«{line.text}»</p>
+						</div>
 					</div>
 				{/each}
 			</div>
@@ -517,6 +590,13 @@
 						class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold cursor-pointer"
 					>
 						Швидкість ×{game.gameSpeed}
+					</button>
+					<button
+						onclick={() => (encyclopediaOpen = true)}
+						class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-amber-300 cursor-pointer"
+						title="Довідник веж та фауни"
+					>
+						📖
 					</button>
 					<button
 						onclick={() => (game.editorMode = !game.editorMode)}
@@ -568,23 +648,33 @@
 
 			<!-- Bottom Control Bar: Heroes & Selected Slot Inspector -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-				<!-- Heroes Panel -->
-				<div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex gap-3">
+				<!-- Heroes Panel with Portraits -->
+				<div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex gap-2.5">
 					{#each engine.heroes as h}
 						{@const cfg = HEROES[h.id]}
-						<div class="flex-1 p-2.5 rounded-lg bg-slate-950 border {game.activeHeroId === h.id ? 'border-amber-400' : 'border-slate-800'}">
-							<div class="flex justify-between items-center">
-								<button onclick={() => (game.activeHeroId = h.id)} class="font-bold text-xs cursor-pointer" style="color: {cfg.color}">
-									{cfg.name}
-								</button>
-								<span class="text-[11px] text-slate-400">
-									{h.respawnTimer > 0 ? `Відновлення ${Math.ceil(h.respawnTimer)}с` : `${Math.ceil(h.hp)}/${h.maxHp} HP`}
-								</span>
+						<div class="flex-1 p-2 rounded-lg bg-slate-950 border flex flex-col justify-between {game.activeHeroId === h.id ? 'border-amber-400 ring-1 ring-amber-400/40' : 'border-slate-800'}">
+							<div class="flex items-center gap-2">
+								<div class="w-10 h-10 shrink-0 rounded-lg bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center p-0.5">
+									<img src={asset(getHeroAssetPath(h.id))} alt={cfg.name} class="max-w-full max-h-full object-contain" />
+								</div>
+								<div class="flex-1 min-w-0">
+									<div class="flex justify-between items-center">
+										<button onclick={() => (game.activeHeroId = h.id)} class="font-bold text-xs truncate cursor-pointer" style="color: {cfg.color}">
+											{cfg.name}
+										</button>
+										<span class="text-[10px] text-slate-400 shrink-0">
+											{h.respawnTimer > 0 ? `${Math.ceil(h.respawnTimer)}с` : `${Math.ceil(h.hp)}/${h.maxHp}`}
+										</span>
+									</div>
+									<div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden mt-1">
+										<div class="bg-sky-400 h-full" style="width: {Math.max(0, (h.hp / h.maxHp) * 100)}%"></div>
+									</div>
+								</div>
 							</div>
 							<button
 								disabled={game.isPaused || h.respawnTimer > 0 || h.abilityCooldownTimer > 0}
 								onclick={() => engine.triggerHeroAbility(h.id)}
-								class="mt-2 w-full py-1.5 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-xs font-bold disabled:opacity-40 cursor-pointer"
+								class="mt-2 w-full py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-[11px] font-bold disabled:opacity-40 cursor-pointer truncate"
 							>
 								{h.abilityCooldownTimer > 0 ? `${cfg.abilityName} (${Math.ceil(h.abilityCooldownTimer)}с)` : `★ ${cfg.abilityName}`}
 							</button>
@@ -592,7 +682,7 @@
 					{/each}
 				</div>
 
-				<!-- Tower Build / Upgrade Contextual Inspector -->
+				<!-- Tower Build / Upgrade Contextual Inspector with Artwork -->
 				<div class="md:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-3">
 					{#if game.activeSlotId}
 						{@const existing = engine.towers.get(game.activeSlotId)}
@@ -604,10 +694,15 @@
 									<button
 										disabled={game.isPaused || game.currency < t.levels[0].cost}
 										onclick={() => engine.buildTower(game.activeSlotId!, tid)}
-										class="p-2 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-400 disabled:opacity-40 text-left cursor-pointer"
+										class="p-1.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-400 disabled:opacity-40 flex items-center gap-2 text-left cursor-pointer"
 									>
-										<div class="font-bold text-xs" style="color: {t.color}">{t.name}</div>
-										<div class="text-[11px] text-amber-400 font-bold">{t.levels[0].cost}⚡</div>
+										<div class="w-10 h-10 shrink-0 rounded bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden p-0.5">
+											<img src={asset(getTowerAssetPath(tid, 1))} alt={t.name} class="max-w-full max-h-full object-contain" />
+										</div>
+										<div class="min-w-0 flex-1">
+											<div class="font-bold text-xs truncate" style="color: {t.color}">{t.name}</div>
+											<div class="text-[11px] text-amber-400 font-bold">{t.levels[0].cost}⚡</div>
+										</div>
 									</button>
 								{/each}
 							</div>
@@ -616,20 +711,27 @@
 							{@const currStats = cfg.levels[existing.level - 1]}
 							{@const nextStats = existing.level < 4 ? cfg.levels[existing.level as 1 | 2 | 3] : null}
 							<div class="flex flex-wrap items-center justify-between gap-3">
-								<div>
-									<div class="font-bold text-sm" style="color: {cfg.color}">
-										{cfg.name} (Рівень {existing.level}/4)
+								<div class="flex items-center gap-3">
+									<div class="w-14 h-14 shrink-0 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center p-1 overflow-hidden shadow-inner">
+										<img src={asset(getTowerAssetPath(existing.type, existing.level))} alt={cfg.name} class="max-w-full max-h-full object-contain" />
 									</div>
-									<p class="text-xs text-slate-400">{currStats.description}</p>
+									<div>
+										<div class="font-bold text-sm flex items-center gap-2" style="color: {cfg.color}">
+											<span>{cfg.name}</span>
+											<span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-200">Рівень {existing.level}/4</span>
+										</div>
+										<p class="text-xs text-slate-400 mt-0.5">{currStats.description}</p>
+									</div>
 								</div>
-								<div class="flex gap-2">
+								<div class="flex gap-2 items-center">
 									{#if nextStats}
 										<button
 											disabled={game.isPaused || game.currency < nextStats.cost}
 											onclick={() => engine.upgradeTower(existing.slotId)}
-											class="px-4 py-2 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs disabled:opacity-40 cursor-pointer"
+											class="px-4 py-2 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs disabled:opacity-40 cursor-pointer flex items-center gap-2 shadow"
 										>
-											Покращити до L{existing.level + 1} ({nextStats.cost}⚡)
+											<img src={asset(getTowerAssetPath(existing.type, (existing.level + 1) as 1 | 2 | 3 | 4))} alt="Next" class="w-5 h-5 object-contain" />
+											<span>Покращити до L{existing.level + 1} ({nextStats.cost}⚡)</span>
 										</button>
 									{/if}
 									<button
@@ -655,6 +757,172 @@
 							{/if}
 						</div>
 					{/if}
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	<!-- Encyclopedia / Bestiary Modal (Showcasing all 47 artworks!) -->
+	{#if encyclopediaOpen}
+		<div class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+			<div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+				<!-- Header with Tabs -->
+				<div class="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-950/50">
+					<div>
+						<h3 class="text-lg font-bold text-amber-400">📖 Довідник обладнання та фауни</h3>
+						<p class="text-xs text-slate-400">Повний каталог промислової зброї колонії та ворожих мутантів</p>
+					</div>
+					<div class="flex items-center gap-2">
+						<div class="bg-slate-800 rounded-lg p-1 flex gap-1">
+							<button
+								onclick={() => (encyclopediaTab = 'towers')}
+								class="px-3 py-1 rounded text-xs font-bold transition cursor-pointer {encyclopediaTab === 'towers' ? 'bg-amber-500 text-slate-950' : 'text-slate-300 hover:text-white'}"
+							>
+								Вежі (8 типів / 32 рівні)
+							</button>
+							<button
+								onclick={() => (encyclopediaTab = 'enemies')}
+								class="px-3 py-1 rounded text-xs font-bold transition cursor-pointer {encyclopediaTab === 'enemies' ? 'bg-amber-500 text-slate-950' : 'text-slate-300 hover:text-white'}"
+							>
+								Фауна (10 ворогів)
+							</button>
+							<button
+								onclick={() => (encyclopediaTab = 'heroes')}
+								class="px-3 py-1 rounded text-xs font-bold transition cursor-pointer {encyclopediaTab === 'heroes' ? 'bg-amber-500 text-slate-950' : 'text-slate-300 hover:text-white'}"
+							>
+								Спеціалісти (5 героїв)
+							</button>
+						</div>
+						<button
+							onclick={() => (encyclopediaOpen = false)}
+							class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
+						>
+							✕
+						</button>
+					</div>
+				</div>
+
+				<!-- Content Area -->
+				<div class="p-4 overflow-y-auto flex-1 space-y-4">
+					{#if encyclopediaTab === 'towers'}
+						<!-- Tower Selector Pills -->
+						<div class="flex flex-wrap gap-1.5 pb-2 border-b border-slate-800">
+							{#each towerList as t}
+								<button
+									onclick={() => (selectedEncyclopediaTowerId = t.id)}
+									class="px-3 py-1.5 rounded-lg border text-xs font-bold transition cursor-pointer flex items-center gap-1.5 {selectedEncyclopediaTowerId === t.id ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-600'}"
+								>
+									<img src={asset(getTowerAssetPath(t.id, 1))} alt={t.name} class="w-4 h-4 object-contain" />
+									<span>{t.name}</span>
+								</button>
+							{/each}
+						</div>
+
+						{@const curTower = TOWERS[selectedEncyclopediaTowerId]}
+						<div>
+							<div class="flex justify-between items-start mb-3">
+								<div>
+									<h4 class="text-xl font-bold" style="color: {curTower.color}">{curTower.name}</h4>
+									<p class="text-xs text-slate-400">{curTower.role} • Ціль: {curTower.targetDomain === 'both' ? 'земля + повітря' : curTower.targetDomain}</p>
+								</div>
+							</div>
+
+							<!-- 4 Levels showcase -->
+							<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+								{#each curTower.levels as lvl}
+									<div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+										<div class="w-full h-32 rounded-lg bg-slate-900 border border-slate-800/80 flex items-center justify-center p-2 mb-2 overflow-hidden shadow-inner">
+											<img src={asset(getTowerAssetPath(curTower.id, lvl.level))} alt={`Рівень ${lvl.level}`} class="max-w-full max-h-full object-contain" />
+										</div>
+										<div class="space-y-1">
+											<div class="flex justify-between items-center">
+												<span class="text-xs font-bold text-amber-400">Рівень {lvl.level}</span>
+												<span class="text-xs font-bold text-slate-300">{lvl.cost}⚡</span>
+											</div>
+											<div class="text-[11px] text-slate-300 flex justify-between">
+												<span>Радіус: {lvl.range}px</span>
+												{#if lvl.damage > 0}
+													<span>Шкода: {lvl.damage}</span>
+												{/if}
+											</div>
+											<p class="text-[11px] text-slate-400 leading-tight pt-1 border-t border-slate-800/60">{lvl.description}</p>
+										</div>
+									</div>
+								{/each}
+							</div>
+						</div>
+
+					{:else if encyclopediaTab === 'enemies'}
+						<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+							{#each enemyList as e}
+								<div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+									<div class="w-full h-28 rounded-lg bg-slate-900 border border-slate-800/80 flex items-center justify-center p-2 mb-2 overflow-hidden shadow-inner">
+										<img src={asset(getEnemyAssetPath(e.id))} alt={e.name} class="max-w-full max-h-full object-contain" />
+									</div>
+									<div class="space-y-1">
+										<div class="flex justify-between items-center">
+											<span class="font-bold text-xs" style="color: {e.color}">{e.name}</span>
+											<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-300">{e.domain === 'air' ? 'Повітря' : 'Земля'}</span>
+										</div>
+										<div class="text-[11px] text-slate-400 flex justify-between">
+											<span>HP: {e.hp}</span>
+											<span>Швидкість: {e.speed}</span>
+										</div>
+										<div class="text-[11px] text-slate-400 flex justify-between">
+											<span>Броня: {Math.round(e.armor * 100)}%</span>
+											<span>Нагорода: {e.reward}⚡</span>
+										</div>
+										{#if e.canJump}
+											<div class="text-[10px] text-amber-300">★ Стрибок через перешкоди</div>
+										{/if}
+										{#if e.spawnsOnDeath}
+											<div class="text-[10px] text-rose-300">★ Розпадається при смерті</div>
+										{/if}
+										{#if e.periodicSpawn}
+											<div class="text-[10px] text-purple-300">★ Породжує зграю в польоті</div>
+										{/if}
+										{#if e.shieldAuraRadius}
+											<div class="text-[10px] text-cyan-300">★ Аура щита союзникам</div>
+										{/if}
+									</div>
+								</div>
+							{/each}
+						</div>
+
+					{:else if encyclopediaTab === 'heroes'}
+						<div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+							{#each heroList as h}
+								<div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+									<div class="w-full h-36 rounded-lg bg-slate-900 border border-slate-800/80 flex items-center justify-center p-2 mb-2 overflow-hidden shadow-inner">
+										<img src={asset(getHeroAssetPath(h.id))} alt={h.name} class="max-w-full max-h-full object-contain" />
+									</div>
+									<div class="space-y-1.5">
+										<div>
+											<div class="font-bold text-sm" style="color: {h.color}">{h.name}</div>
+											<div class="text-xs text-slate-400">{h.profession}</div>
+										</div>
+										<div class="text-xs text-slate-300 flex justify-between">
+											<span>HP: {h.hp}</span>
+											<span>Шкода: {h.damage}</span>
+										</div>
+										<div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
+											<div class="text-xs font-bold text-emerald-400">★ {h.abilityName}</div>
+											<p class="text-[11px] text-slate-400 mt-0.5">{h.abilityDesc}</p>
+										</div>
+									</div>
+								</div>
+							{/each}
+						</div>
+					{/if}
+				</div>
+
+				<div class="p-3 border-t border-slate-800 flex justify-end bg-slate-950/40">
+					<button
+						onclick={() => (encyclopediaOpen = false)}
+						class="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs cursor-pointer"
+					>
+						Повернутися до гри
+					</button>
 				</div>
 			</div>
 		</div>
