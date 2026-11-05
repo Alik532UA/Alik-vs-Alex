@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: 'npm'
@@ -45,24 +45,46 @@ jobs:
         if: ${{ !cancelled() }}
         run: npm run test:unit
 
+      - name: Resolve base path and origin
+        id: site
+        if: ${{ !cancelled() }}
+        run: |
+          owner=$(printf '%s' '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')
+          repo='${{ github.event.repository.name }}'
+          if [ "$(printf '%s' "$repo" | tr '[:upper:]' '[:lower:]')" = "$owner.github.io" ]; then
+            echo "base=" >> "$GITHUB_OUTPUT"
+          else
+            echo "base=/$repo" >> "$GITHUB_OUTPUT"
+          fi
+          echo "origin=https://$owner.github.io" >> "$GITHUB_OUTPUT"
+
       - name: Build static site
+        id: build
+        if: ${{ !cancelled() }}
         run: npm run build
         env:
-          BASE_PATH: /Alik-vs-Alex
+          BASE_PATH: ${{ steps.site.outputs.base }}
+          SITE_ORIGIN: ${{ steps.site.outputs.origin }}
 
       - name: Verify build artifacts
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: npm run check:build
+
+      - name: Build does not modify tracked files
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: git diff --exit-code
 
       - name: Upload artifact
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
-          path: 'build'
+          path: build
 
   deploy:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pages: write
       id-token: write
@@ -72,5 +94,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
-
+        uses: actions/deploy-pages@v5
