@@ -2,12 +2,14 @@ import { MISSION_01 } from './configs';
 import type { TowerId, HeroId } from './types';
 import { LOADOUT_PRESETS, ALL_TOWERS, ALL_HEROES, getRandomLoadout } from './presets';
 import { storage } from '$lib/services/storage';
+import type { GameLocale } from '$lib/i18n/game';
 
 export type ScreenMode = 'menu' | 'loadout' | 'briefing' | 'playing';
 
 class GameController {
 	screen = $state<ScreenMode>('menu');
 	mission = $state(MISSION_01);
+	locale = $state<GameLocale>('uk');
 
 	// Loadout selection (max 5 towers, max 2 heroes; min 1 tower, min 1 hero for challenge mode)
 	selectedTowers = $state<TowerId[]>([
@@ -39,29 +41,41 @@ class GameController {
 	activeHeroId = $state<HeroId | null>(null);
 	editorMode = $state(false);
 
+	setLocale(newLocale: GameLocale) {
+		this.locale = newLocale;
+		storage.set('settings_locale', newLocale);
+	}
+
+	loadSavedLocale() {
+		const saved = storage.get('settings_locale');
+		if (saved === 'uk' || saved === 'en' || saved === 'ru') {
+			this.locale = saved;
+		}
+	}
+
 	toggleTowerInLoadout(id: TowerId) {
 		this.activePresetId = null;
 		if (this.selectedTowers.includes(id)) {
+			// Deselects clicked tower, freeing slot for another selection
 			this.selectedTowers = this.selectedTowers.filter((t) => t !== id);
 		} else if (this.selectedTowers.length < 5) {
+			// Selects tower only if under maximum limit
 			this.selectedTowers = [...this.selectedTowers, id];
-		} else {
-			// At limit: replace oldest selection (FIFO) so deselecting is not required
-			this.selectedTowers = [...this.selectedTowers.slice(1), id];
 		}
+		// Strict limit: if 5 are already selected, ignore unselected clicks until a tower is deselected
 		this.saveLoadout();
 	}
 
 	toggleHeroInLoadout(id: HeroId) {
 		this.activePresetId = null;
 		if (this.selectedHeroes.includes(id)) {
+			// Deselects clicked hero, freeing slot for another selection
 			this.selectedHeroes = this.selectedHeroes.filter((h) => h !== id);
 		} else if (this.selectedHeroes.length < 2) {
+			// Selects hero only if under maximum limit
 			this.selectedHeroes = [...this.selectedHeroes, id];
-		} else {
-			// At limit: replace oldest selection (FIFO) so deselecting is not required
-			this.selectedHeroes = [...this.selectedHeroes.slice(1), id];
 		}
+		// Strict limit: if 2 are already selected, ignore unselected clicks until a hero is deselected
 		this.saveLoadout();
 	}
 
@@ -102,6 +116,7 @@ class GameController {
 	}
 
 	loadSavedLoadout() {
+		this.loadSavedLocale();
 		const saved = storage.getJSON<{
 			towers?: TowerId[];
 			heroes?: HeroId[];

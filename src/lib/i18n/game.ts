@@ -1,4 +1,4 @@
-export type GameLocale = 'uk' | 'en';
+export type GameLocale = 'uk' | 'en' | 'ru';
 
 export interface GameTranslations {
 	title: string;
@@ -17,6 +17,43 @@ export interface GameTranslations {
 	towerPlaced: string;
 	insufficientScrap: string;
 	hotkeysHelp: string;
+
+	// Target domains
+	targetLabel: string;
+	targetGround: string;
+	targetAir: string;
+	targetBoth: string;
+
+	// Stats labels
+	towerCost: string;
+	towerRange: string;
+	towerDamage: string;
+	robotDamage: string;
+	robotHp: string;
+	robotCount: string;
+	levelLabel: string;
+
+	// Encyclopedia & UI
+	encyclopediaTitle: string;
+	encyclopediaSubtitle: string;
+	tabTowers: string;
+	tabEnemies: string;
+	tabHeroes: string;
+	backToGame: string;
+	missionSquad: string;
+	selectTowersHelp: string;
+	selectHeroesHelp: string;
+	heroInspectorTitle: string;
+	heroStatsHp: string;
+	heroStatsDamage: string;
+	heroStatsRange: string;
+	heroStatsCooldown: string;
+	limitReached: string;
+	inSquad: string;
+	selectedBadge: string;
+	btnBriefing: string;
+	btnToBattle: string;
+	btnChangeLoadout: string;
 }
 
 export const GAME_I18N: Record<GameLocale, GameTranslations> = {
@@ -36,7 +73,41 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		gridCursor: 'Курсор сітки',
 		towerPlaced: 'Вежу збудовано',
 		insufficientScrap: 'Недостатньо брухту для будівництва',
-		hotkeysHelp: 'Пробіл: пауза, 1-2: швидкість, Стрілки: сітка, Enter: будівництво'
+		hotkeysHelp: 'Пробіл: пауза, 1-2: швидкість, Стрілки: сітка, Enter: будівництво',
+
+		targetLabel: 'Ціль',
+		targetGround: 'земля',
+		targetAir: 'повітря',
+		targetBoth: 'земля + повітря',
+
+		towerCost: 'Вартість',
+		towerRange: 'Радіус',
+		towerDamage: 'Шкода',
+		robotDamage: 'Шкода робота',
+		robotHp: 'HP робота',
+		robotCount: 'Ліміт ботів',
+		levelLabel: 'Рівень',
+
+		encyclopediaTitle: '📖 Довідник обладнання та фауни',
+		encyclopediaSubtitle: 'Повний каталог промислової зброї колонії та ворожих мутантів',
+		tabTowers: 'Вежі (8 типів / 32 рівні)',
+		tabEnemies: 'Фауна (10 ворогів)',
+		tabHeroes: 'Спеціалісти (5 героїв)',
+		backToGame: 'Повернутися до гри',
+		missionSquad: 'Бойовий склад місії',
+		selectTowersHelp: 'Інженерні установки (Оберіть від 1 до 5)',
+		selectHeroesHelp: 'Головні спеціалісти (Оберіть 1 або 2)',
+		heroInspectorTitle: 'Інспектор спеціаліста',
+		heroStatsHp: 'Здоров’я',
+		heroStatsDamage: 'Шкода',
+		heroStatsRange: 'Радіус',
+		heroStatsCooldown: 'Кулдаун',
+		limitReached: 'Ліміт вичерпано. Зніміть вибір з іншого елемента.',
+		inSquad: 'В загоні',
+		selectedBadge: 'Обрано',
+		btnBriefing: 'Далі: Вступний брифінг →',
+		btnToBattle: 'До бою!',
+		btnChangeLoadout: '← Змінити набір'
 	},
 	en: {
 		title: 'Alik vs Sahko',
@@ -54,7 +125,93 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		gridCursor: 'Grid Cursor',
 		towerPlaced: 'Tower Deployed',
 		insufficientScrap: 'Not enough scrap to construct',
-		hotkeysHelp: 'Space: pause, 1-2: speed, Arrows: grid, Enter: build'
+		hotkeysHelp: 'Space: pause, 1-2: speed, Arrows: grid, Enter: build',
+
+		targetLabel: 'Target',
+		targetGround: 'ground',
+		targetAir: 'air',
+		targetBoth: 'ground + air',
+
+		towerCost: 'Cost',
+		towerRange: 'Range',
+		towerDamage: 'Damage',
+		robotDamage: 'Bot Damage',
+		robotHp: 'Bot HP',
+		robotCount: 'Bot Limit',
+		levelLabel: 'Level',
+
+		encyclopediaTitle: '📖 Equipment & Fauna Guide',
+		encyclopediaSubtitle: 'Full catalog of industrial colony weaponry and mutant hostiles',
+		tabTowers: 'Towers (8 types / 32 levels)',
+		tabEnemies: 'Fauna (10 enemies)',
+		tabHeroes: 'Specialists (5 heroes)',
+		backToGame: 'Back to Game',
+		missionSquad: 'Mission Squad Roster',
+		selectTowersHelp: 'Engineering Towers (Select 1 to 5)',
+		selectHeroesHelp: 'Lead Specialists (Select 1 or 2)',
+		heroInspectorTitle: 'Specialist Inspector',
+		heroStatsHp: 'Health',
+		heroStatsDamage: 'Damage',
+		heroStatsRange: 'Range',
+		heroStatsCooldown: 'Cooldown',
+		limitReached: 'Limit reached. Deselect an item first.',
+		inSquad: 'In Squad',
+		selectedBadge: 'Selected',
+		btnBriefing: 'Next: Mission Briefing →',
+		btnToBattle: 'To Battle!',
+		btnChangeLoadout: '← Change Loadout'
+	},
+	ru: {
+		title: 'Алик против Сахко',
+		subtitle: 'Тактическая оборона космической мастерской',
+		waves: 'Волна',
+		scrap: 'Лом',
+		health: 'Прочность базы',
+		startWave: 'Начать волну',
+		pause: 'Пауза',
+		resume: 'Продолжить',
+		speed: 'Скорость',
+		victory: 'Победа! Сектор зачищен',
+		defeat: 'Мастерская разрушена!',
+		restart: 'Играть снова',
+		gridCursor: 'Курсор сетки',
+		towerPlaced: 'Башня построена',
+		insufficientScrap: 'Недостаточно лома для постройки',
+		hotkeysHelp: 'Пробел: пауза, 1-2: скорость, Стрелки: сетка, Enter: постройка',
+
+		targetLabel: 'Цель',
+		targetGround: 'земля',
+		targetAir: 'воздух',
+		targetBoth: 'земля + воздух',
+
+		towerCost: 'Стоимость',
+		towerRange: 'Радиус',
+		towerDamage: 'Урон',
+		robotDamage: 'Урон робота',
+		robotHp: 'HP робота',
+		robotCount: 'Лимит ботов',
+		levelLabel: 'Уровень',
+
+		encyclopediaTitle: '📖 Справочник оборудования и фауны',
+		encyclopediaSubtitle: 'Полный каталог промышленного оружия колонии и вражеских мутантов',
+		tabTowers: 'Башни (8 типов / 32 уровня)',
+		tabEnemies: 'Фауна (10 врагов)',
+		tabHeroes: 'Специалисты (5 героев)',
+		backToGame: 'Вернуться к игре',
+		missionSquad: 'Боевой состав миссии',
+		selectTowersHelp: 'Инженерные установки (Выберите от 1 до 5)',
+		selectHeroesHelp: 'Главные специалисты (Выберите 1 или 2)',
+		heroInspectorTitle: 'Инспектор специалиста',
+		heroStatsHp: 'Здоровье',
+		heroStatsDamage: 'Урон',
+		heroStatsRange: 'Радиус',
+		heroStatsCooldown: 'Кулдаун',
+		limitReached: 'Лимит исчерпан. Снимите выбор с другого элемента.',
+		inSquad: 'В отряде',
+		selectedBadge: 'Выбрано',
+		btnBriefing: 'Далее: Вводный брифинг →',
+		btnToBattle: 'В бой!',
+		btnChangeLoadout: '← Изменить набор'
 	}
 };
 
@@ -62,4 +219,14 @@ export function getTranslation(locale: GameLocale = 'uk'): GameTranslations {
 	const t = GAME_I18N[locale];
 	if (!t) return GAME_I18N.uk;
 	return t;
+}
+
+export function getTargetDomainLabel(
+	domain: 'ground' | 'air' | 'both',
+	locale: GameLocale = 'uk'
+): string {
+	const t = getTranslation(locale);
+	if (domain === 'both') return t.targetBoth;
+	if (domain === 'air') return t.targetAir;
+	return t.targetGround;
 }

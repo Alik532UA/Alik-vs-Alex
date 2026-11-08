@@ -93,52 +93,44 @@ describe('Loadout Presets and Selection Logic', () => {
 		expect(game.selectedHeroes.length).toBe(0);
 	});
 
-	it('replaces the oldest selection (FIFO) when at maximum limit without requiring prior deselect', () => {
+	it('enforces strict limit (5) where unselected towers are locked until one is deselected', () => {
 		// Start with balance: ['robot_line', 'drill', 'mining_laser', 'fastener', 'pile_driver']
 		game.applyPreset('balance');
-		expect(game.selectedTowers).toEqual([
-			'robot_line',
-			'drill',
-			'mining_laser',
-			'fastener',
-			'pile_driver'
-		]);
+		expect(game.selectedTowers.length).toBe(5);
 
-		// Add 6th tower 'crane' -> 'robot_line' is dropped, 'crane' is appended
+		// Attempting to select 6th tower 'crane' is ignored due to strict limit
 		game.toggleTowerInLoadout('crane');
 		expect(game.selectedTowers.length).toBe(5);
-		expect(game.selectedTowers).toEqual([
-			'drill',
-			'mining_laser',
-			'fastener',
-			'pile_driver',
-			'crane'
-		]);
+		expect(game.selectedTowers).not.toContain('crane');
 
-		// Add 7th tower 'exosuit' -> 'drill' is dropped, 'exosuit' is appended
-		game.toggleTowerInLoadout('exosuit');
+		// Deselecting 'robot_line' frees a slot (down to 4)
+		game.toggleTowerInLoadout('robot_line');
+		expect(game.selectedTowers.length).toBe(4);
+		expect(game.selectedTowers).not.toContain('robot_line');
+
+		// Now selecting 'crane' succeeds
+		game.toggleTowerInLoadout('crane');
 		expect(game.selectedTowers.length).toBe(5);
-		expect(game.selectedTowers).toEqual([
-			'mining_laser',
-			'fastener',
-			'pile_driver',
-			'crane',
-			'exosuit'
-		]);
+		expect(game.selectedTowers).toContain('crane');
 	});
 
-	it('replaces the oldest hero (FIFO) when at maximum limit (2) without requiring prior deselect', () => {
+	it('enforces strict limit (2) where unselected heroes are locked until one is deselected', () => {
 		game.applyPreset('balance');
 		expect(game.selectedHeroes).toEqual(['fastener_hero', 'exosuit_hero']);
 
-		// Add 3rd hero 'laser_hero' -> 'fastener_hero' is dropped, 'laser_hero' is appended
+		// Attempting to select 3rd hero 'laser_hero' is ignored due to strict limit
 		game.toggleHeroInLoadout('laser_hero');
 		expect(game.selectedHeroes.length).toBe(2);
-		expect(game.selectedHeroes).toEqual(['exosuit_hero', 'laser_hero']);
+		expect(game.selectedHeroes).not.toContain('laser_hero');
 
-		// Add 4th hero 'chemist_hero' -> 'exosuit_hero' is dropped, 'chemist_hero' is appended
-		game.toggleHeroInLoadout('chemist_hero');
+		// Deselecting 'fastener_hero' frees a slot (down to 1)
+		game.toggleHeroInLoadout('fastener_hero');
+		expect(game.selectedHeroes.length).toBe(1);
+		expect(game.selectedHeroes).not.toContain('fastener_hero');
+
+		// Now selecting 'laser_hero' succeeds
+		game.toggleHeroInLoadout('laser_hero');
 		expect(game.selectedHeroes.length).toBe(2);
-		expect(game.selectedHeroes).toEqual(['laser_hero', 'chemist_hero']);
+		expect(game.selectedHeroes).toContain('laser_hero');
 	});
 });
