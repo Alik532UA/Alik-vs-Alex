@@ -8,12 +8,16 @@
 - **Хостинг**: GitHub Pages (`https://alik532ua.github.io/Alik-vs-Alex/`).
 - **Гілка деплою**: `master` (або `main`).
 
+---
+
 ## 2. Конфігурація адресації та базового шляху (SEO-v10 § 1.2)
 
 - **SITE_ORIGIN**: `https://alik532ua.github.io`
 - **SITE_BASE**: `/Alik-vs-Alex` (у production-збірці; порожній рядок у локальній розробці)
 - **paths.relative**: `false` (гарантує коректні абсолютні шляхи при SSR/prerender)
 - **paths.origin**: `https://alik532ua.github.io`
+
+---
 
 ## 3. Реєстр префіксів сховища (STORAGE-NAMESPACE-v10 § 1)
 
@@ -27,15 +31,18 @@
 
 ### Реєстр ключів сховища
 
-| Ключ (без префікса) | Повний ключ у сховищі   | Призначення              | Дозволені значення |
-| ------------------- | ----------------------- | ------------------------ | ------------------ |
-| `high_score`        | `alikvsalex_high_score` | Рекорд проходження хвиль | Ціле число         |
-| `settings_volume`   | `alikvsalex_volume`     | Налаштування гучності    | Число 0.0 - 1.0    |
-| `loadout_towers`    | `alikvsalex_towers`     | Збережений набір веж     | JSON масив TowerId |
-| `loadout_heroes`    | `alikvsalex_heroes`     | Збережений набір героїв  | JSON масив HeroId  |
+| Ключ (без префікса) | Повний ключ у сховищі     | Призначення                            | Дозволені значення    |
+| ------------------- | ------------------------- | -------------------------------------- | --------------------- |
+| `high_score`        | `alikvsalex_high_score`   | Рекорд проходження хвиль               | Ціле число            |
+| `settings_volume`   | `alikvsalex_volume`       | Налаштування гучності                  | Число 0.0 - 1.0       |
+| `loadout_towers`    | `alikvsalex_towers`       | Збережений набір веж                   | JSON масив TowerId    |
+| `loadout_heroes`    | `alikvsalex_heroes`       | Збережений набір героїв                | JSON масив HeroId     |
+| `stale_reload`      | `alikvsalex_stale_reload` | Захист від циклічного перезавантаження | URL поточної сторінки |
 
 - Прямий доступ до `localStorage` поза фасадом `$lib/services/storage.ts` заборонено (STORAGE-NAMESPACE § 4).
 - Метод `storage.clear()` очищує виключно власні ключі за префіксом (STORAGE-NAMESPACE § 3).
+
+---
 
 ## 4. Ігрові системи, баланс та архітектура модулів
 
@@ -44,6 +51,8 @@
    - Система маршрутизації ворогів (Waypoints, розрахунок кута та поворот спрайтів).
    - Менеджер снарядів, мін та анімацій лазерів.
    - Механіки бафів, сповільнення, оглушення, зняття броні (armor shred).
+   - Захист від падіння FPS: `dt` обмежений порогом 0.1s для запобігання квантовим прольотам через колізії.
+
 2. **Конфігурації балансу (`src/lib/game/configs.ts`)**:
    - **8 типів веж** (кожна має 4 рівні апгрейду):
      - `drill` (Шнековий перфоратор)
@@ -58,17 +67,28 @@
      - `runner` (Бігун), `broodmother` (Матриця), `armored_beetle` (Броненосець), `glider` (Планер), `spitter` (Плювач), `jumper` (Стрибун), `spore_carrier` (Спороносець), `pack_hound` (Гончак), `heavy_rhino` (Носоріг), `shield_bearer` (Щитоносець).
    - **5 спеціалізованих героїв**:
      - `fastener_hero`, `flamer_hero`, `exosuit_hero`, `chemist_hero`, `laser_hero`.
-3. **Реактивний стан (`src/lib/game/state.svelte.ts`)**:
+
+3. **Адаптивна генерація хвиль (`src/lib/game/waves.ts`)**:
+   - Алгоритм масштабування складності: динамічний розрахунок пулу ворогів, часу спавну та нагород за хвилю.
+
+4. **Реактивний стан (`src/lib/game/state.svelte.ts`)**:
    - `GameController`: єдине джерело правди для UI та стану екранів (`menu`, `loadout`, `briefing`, `playing`).
    - Керування швидкістю гри (1x / 2x) та паузою огляду.
-4. **Мапи та рівні (`src/lib/game/maps.ts`)**:
+
+5. **Мапи та рівні (`src/lib/game/maps.ts`)**:
    - Реєстр тактичних мап (`workshop_alpha`, `reactor_core`), розміри сітки, вейпоінти та динамічна перевірка доступності будівництва (`isCellBuildable`).
-5. **Аудіо-рушій (`src/lib/game/audio.ts`)**:
+
+6. **Аудіо-рушій (`src/lib/game/audio.ts`)**:
    - `GameAudioManager`: поліфонічний процедурний синтез звукових ефектів (постріли лазерів, вибухи, алерти хвиль) на базі Web Audio API з повним контролем гучності та mute.
-6. **Багатомовність (`src/lib/i18n/game.ts`)**:
+
+7. **Багатомовність (`src/lib/i18n/game.ts`)**:
    - Двомовна локалізація (UA / EN) із паритетом ключів для веж, ворогів, інтерфейсу та голосових оголошень.
-7. **Архітектурні рішення (ADR)**:
+
+8. **Архітектурні рішення (ADR)**:
    - [ADR 0001: Headless Simulation Engine, Maps Decoupling, and Keyboard Grid Accessibility](docs/adr/0001-pure-simulation-engine-and-a11y.md).
+   - [ADR 0002: Procedural Web Audio Synthesis and Adaptive Loop Architecture](docs/adr/0002-procedural-web-audio-and-adaptive-loop.md).
+
+---
 
 ## 5. Безпека та CSP (SECURITY-v10 & CSP-v10)
 
@@ -79,22 +99,38 @@
   - `src/csp-hash.test.ts`: верифікація цілісності інлайн-скриптів.
   - `src/security.test.ts`: автоматична заборона сирого {@html} та захист ізоляції Web Storage.
 
-## 6. Модель версіонування (VERSIONING-v10 § 1 & § 2)
+---
+
+## 6. Надійність та Error Boundaries (ERROR-HANDLING-v10 § 2.2)
+
+- **Клієнтський обробник (`src/hooks.client.ts`)**:
+  - Перехоплює та логує неперехоплені помилки в кільцевий буфер `logService.svelte.ts`.
+  - Відновлює сторінку при застарілих чанках нової збірки (`chunkMissing` + `reloadOnce`).
+- **Межа помилок Svelte 5 (`<svelte:boundary>`)**:
+  - Інтерфейс у `src/routes/+layout.svelte` захищено компонентом `ErrorFallback.svelte`.
+
+---
+
+## 7. Модель версіонування (VERSIONING-v10 § 1 & § 2)
 
 - **Модель бампа**: «бамп на коміт» `scripts/bump-version.mjs` (піднімає patch-версію `+0.0.1` на чистому Node ESM без дочірніх процесів `npm`).
 - **Синхронізація**: синхронізує `package.json`, `package-lock.json`, `static/app-version.json` та `src/lib/config/version.ts`.
 - **Хуки**: `.husky/pre-commit` автоматично викликає тести, перевірку типів та бамп перед створенням коміту.
 
-## 7. Політика перевірок, тестування та гейтів якості
+---
+
+## 8. Політика перевірок, тестування та гейтів якості
 
 - `npm run check`: перевірка типів TypeScript та синтаксису Svelte 5 Runes через `svelte-check`.
-- `npm run lint`: повний лінтинг форматування (Prettier) та коду (ESLint 9 Flat Config).
-- `npm run test:unit`: набір юніт-тестів Vitest (`src/csp-hash.test.ts`, `src/security.test.ts`, `src/lib/services/storage.test.ts`, `src/lib/game/engine.test.ts`).
+- `npm run lint`: повний лінтинг форматування (Prettier) та коду (ESLint Flat Config).
+- `npm run test:unit`: набір юніт-тестів Vitest (9 файлів, рушій, хвилі, карти, аудіо, сховище, безпека, CSP).
 - `npm run check:build`: автоматичний гейт якості зібраного сайту (`build/index.html`, `build/sitemap.xml`).
 - `npm run audit:ci`: строгий автоматичний аудит безпеки npm-пакетів.
 - Всі перевірки вбудовані у CI/CD workflow [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
-## 8. Доступність (a11y) та керування
+---
+
+## 9. Доступність (a11y) та керування
 
 - **Зменшення руху (`prefers-reduced-motion`)**: При активації системного режиму інтенсивні візуальні струси екрана та спалахи вибухів автоматично деактивуються.
 - **Доступність для скрінрідерів (`src/lib/game/a11y.ts`)**:
@@ -106,18 +142,3 @@
   - `Arrow keys` / `WASD` — Навігація курсором сітки.
   - `Enter` — Зведення обраної вежі на поточній клітинці.
   - `Esc` — Скасування виділеного слоту або режиму будівництва.
-- **SEO & Маніфести**:
-  - `static/robots.txt`: інструкції для пошукових ботів та шлях до карти сайту.
-  - `static/llms.txt`: стандартизований маніфест опису гри для AI агентів.
-  - `build/sitemap.xml`: автоматично генерується після кожної збірки.
-
-## 9. Реєстр префіксів на спільному origin
-
-| Проєкт           | Префікс (prod)      | Префікс (dev)           | Призначення                      |
-| ---------------- | ------------------- | ----------------------- | -------------------------------- |
-| Alik-vs-Alex     | `alikvsalex_`       | `alikvsalex-dev_`       | Космічна стратегія Tower Defense |
-| adoptananimal    | `adoptananimal_`    | `adoptananimal-dev_`    | Притулок для тварин              |
-| VetCrewEmergency | `vetcrewemergency_` | `vetcrewemergency-dev_` | Невідкладна ветеринарна допомога |
-| VetCrewHospital  | `vetcrewhospital_`  | `vetcrewhospital-dev_`  | Ветеринарний госпіталь           |
-| VetCrewGames     | `vetcrewgames_`     | `vetcrewgames-dev_`     | Навчальні ветеринарні ігри       |
-| DeviantBlaze     | `deviantblaze_`     | `deviantblaze-dev_`     | Рок-портал та аудіовізуалізатор  |
