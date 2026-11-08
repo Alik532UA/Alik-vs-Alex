@@ -4,6 +4,7 @@
 	import { TOWERS, HEROES, ENEMIES } from '$lib/game/configs';
 	import { TDGameEngine } from '$lib/game/engine';
 	import type { ActiveEnemy } from '$lib/game/engine';
+	import { gameAudio } from '$lib/game/audio';
 	import {
 		sprites,
 		getTowerAssetPath,
@@ -431,6 +432,7 @@
 
 	onMount(() => {
 		sprites.loadAll();
+		game.loadSavedLoadout();
 		let last = performance.now();
 		let raf: number;
 		let lastHudUpdate = performance.now();
@@ -525,12 +527,14 @@
 		<div
 			class="max-w-5xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6"
 		>
-			<div class="flex justify-between items-center">
+			<div class="flex flex-wrap justify-between items-center gap-3">
 				<div>
 					<h2 class="text-2xl font-bold">Комплектація загону перед місією</h2>
 					<p class="text-slate-400 text-sm">
-						Оберіть до 5 промислових установок ({game.selectedTowers.length}/5) та 2 героїв ({game
-							.selectedHeroes.length}/2)
+						Оберіть установки (1–5, зараз: <span class="font-bold text-amber-400"
+							>{game.selectedTowers.length}/5</span
+						>) та спеціалістів (1–2, зараз:
+						<span class="font-bold text-emerald-400">{game.selectedHeroes.length}/2</span>)
 					</p>
 				</div>
 				<div class="flex items-center gap-3">
@@ -545,20 +549,128 @@
 				</div>
 			</div>
 
-			<!-- Towers Selection Grid with Real Artwork -->
+			<!-- Quick Presets & Actions Bar (Горизонтальна панель швидких кнопок) -->
+			<div
+				class="flex flex-wrap items-center gap-2 p-2.5 bg-slate-950/80 border border-slate-800 rounded-xl"
+			>
+				<span
+					class="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 flex items-center gap-1.5"
+				>
+					<span>⚡</span> Пресети:
+				</span>
+				<button
+					type="button"
+					onclick={() => {
+						gameAudio.playSound('click');
+						game.randomizeLoadout();
+					}}
+					class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs transition cursor-pointer flex items-center gap-1.5 border border-slate-700 hover:border-amber-400 shadow-sm"
+					title="Згенерувати 5 випадкових веж та 2 випадкових героїв"
+				>
+					<span>🎲</span> <span>Випадковий</span>
+				</button>
+				<button
+					type="button"
+					onclick={() => {
+						gameAudio.playSound('click');
+						game.applyPreset('balance');
+					}}
+					class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 border {game.activePresetId ===
+					'balance'
+						? 'bg-amber-500 text-slate-950 border-amber-400 shadow'
+						: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
+					title="Універсальний набір: затримка, лазер, пробиття та монтаж"
+				>
+					<span>🛡️</span> <span>Баланс</span>
+				</button>
+				<button
+					type="button"
+					onclick={() => {
+						gameAudio.playSound('click');
+						game.applyPreset('heavy');
+					}}
+					class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 border {game.activePresetId ===
+					'heavy'
+						? 'bg-amber-500 text-slate-950 border-amber-400 shadow'
+						: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
+					title="Бронебійні знаряддя, важкі крани та штурмові екзокостюми"
+				>
+					<span>💥</span> <span>Важкий</span>
+				</button>
+				<button
+					type="button"
+					onclick={() => {
+						gameAudio.playSound('click');
+						game.applyPreset('control');
+					}}
+					class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 border {game.activePresetId ===
+					'control'
+						? 'bg-amber-500 text-slate-950 border-amber-400 shadow'
+						: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
+					title="Сповільнення сейсмікою, мінні загородження та зачистка"
+				>
+					<span>🌪️</span> <span>Контроль</span>
+				</button>
+				<div class="h-5 w-px bg-slate-800 mx-1"></div>
+				<button
+					type="button"
+					onclick={() => {
+						gameAudio.playSound('click');
+						game.clearLoadout();
+					}}
+					class="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:border-rose-500/60 font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
+					title="Скинути весь вибір (0 веж, 0 героїв)"
+				>
+					<span>🗑️</span> <span>Очистити</span>
+				</button>
+			</div>
+
+			<!-- Towers Selection Grid with Real Artwork & Dimming -->
 			<div>
-				<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">
-					Інженерні вежі (Оберіть до 5 з 8)
-				</h3>
+				<div class="flex items-center justify-between mb-2">
+					<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">
+						Інженерні вежі (Оберіть від 1 до 5)
+					</h3>
+					<span
+						class="text-xs px-2 py-0.5 rounded font-bold {game.selectedTowers.length === 5
+							? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+							: game.selectedTowers.length > 0
+								? 'bg-slate-800 text-slate-300'
+								: 'bg-rose-500/20 text-rose-300 border border-rose-500/40'}"
+					>
+						{game.selectedTowers.length}/5
+					</span>
+				</div>
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 					{#each towerList as t}
-						{@const active = game.selectedTowers.includes(t.id)}
+						{@const isSelected = game.selectedTowers.includes(t.id)}
+						{@const isFull = game.selectedTowers.length >= 5}
+						{@const isDimmed = !isSelected && isFull}
 						<button
-							onclick={() => game.toggleTowerInLoadout(t.id)}
-							class="p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between {active
-								? 'bg-slate-800/90 border-amber-400 ring-2 ring-amber-400/30 shadow-lg'
-								: 'bg-slate-950/60 border-slate-800 opacity-75 hover:opacity-100'}"
+							type="button"
+							onclick={() => {
+								gameAudio.playSound('click');
+								game.toggleTowerInLoadout(t.id);
+							}}
+							class="p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between relative group {isSelected
+								? 'bg-slate-800/95 border-amber-400 ring-2 ring-amber-400/30 shadow-lg shadow-amber-500/10 opacity-100 scale-[1.01]'
+								: isDimmed
+									? 'bg-slate-950/40 border-slate-900/90 opacity-40 hover:opacity-90 grayscale-[35%] hover:grayscale-0 hover:border-amber-400/60 hover:bg-slate-950/80 shadow-none'
+									: 'bg-slate-950/70 border-slate-800/90 opacity-80 hover:opacity-100 hover:border-slate-700'}"
 						>
+							{#if isSelected}
+								<span
+									class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 shadow"
+								>
+									✓ Обрано
+								</span>
+							{:else if isDimmed}
+								<span
+									class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 group-hover:bg-amber-500/20 group-hover:text-amber-300 transition"
+								>
+									⇄ Замінити
+								</span>
+							{/if}
 							<div
 								class="w-full h-24 rounded-lg bg-slate-950/80 border border-slate-800/80 flex items-center justify-center p-1.5 mb-2 overflow-hidden"
 							>
@@ -583,20 +695,52 @@
 				</div>
 			</div>
 
-			<!-- Heroes Selection Grid with Real Portraits -->
+			<!-- Heroes Selection Grid with Real Portraits & Dimming -->
 			<div>
-				<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">
-					Головні спеціалісти (Оберіть 2 з 5)
-				</h3>
+				<div class="flex items-center justify-between mb-2">
+					<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">
+						Головні спеціалісти (Оберіть 1 або 2)
+					</h3>
+					<span
+						class="text-xs px-2 py-0.5 rounded font-bold {game.selectedHeroes.length === 2
+							? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+							: game.selectedHeroes.length > 0
+								? 'bg-slate-800 text-slate-300'
+								: 'bg-rose-500/20 text-rose-300 border border-rose-500/40'}"
+					>
+						{game.selectedHeroes.length}/2
+					</span>
+				</div>
 				<div class="grid grid-cols-1 md:grid-cols-5 gap-3">
 					{#each heroList as h}
-						{@const active = game.selectedHeroes.includes(h.id)}
+						{@const isSelected = game.selectedHeroes.includes(h.id)}
+						{@const isFull = game.selectedHeroes.length >= 2}
+						{@const isDimmed = !isSelected && isFull}
 						<button
-							onclick={() => game.toggleHeroInLoadout(h.id)}
-							class="p-3 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between {active
-								? 'bg-slate-800/90 border-emerald-400 ring-2 ring-emerald-400/30 shadow-lg'
-								: 'bg-slate-950/60 border-slate-800 opacity-75 hover:opacity-100'}"
+							type="button"
+							onclick={() => {
+								gameAudio.playSound('click');
+								game.toggleHeroInLoadout(h.id);
+							}}
+							class="p-3 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between relative group {isSelected
+								? 'bg-slate-800/95 border-emerald-400 ring-2 ring-emerald-400/30 shadow-lg shadow-emerald-500/10 opacity-100 scale-[1.01]'
+								: isDimmed
+									? 'bg-slate-950/40 border-slate-900/90 opacity-40 hover:opacity-90 grayscale-[35%] hover:grayscale-0 hover:border-emerald-400/60 hover:bg-slate-950/80 shadow-none'
+									: 'bg-slate-950/70 border-slate-800/90 opacity-80 hover:opacity-100 hover:border-slate-700'}"
 						>
+							{#if isSelected}
+								<span
+									class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 shadow"
+								>
+									★ В загоні
+								</span>
+							{:else if isDimmed}
+								<span
+									class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 group-hover:bg-emerald-500/20 group-hover:text-emerald-300 transition"
+								>
+									⇄ Замінити
+								</span>
+							{/if}
 							<div
 								class="w-full h-28 rounded-lg bg-slate-950/80 border border-slate-800/80 flex items-center justify-center p-1 mb-2 overflow-hidden"
 							>
@@ -619,10 +763,42 @@
 				</div>
 			</div>
 
-			<div class="flex justify-end">
+			<!-- Bottom Actions & Readiness State (Гнучкий мінімум) -->
+			<div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800">
+				<div class="text-xs">
+					{#if game.selectedTowers.length === 0 || game.selectedHeroes.length === 0}
+						<span class="text-rose-400 font-semibold flex items-center gap-1.5">
+							<span>⚠️</span>
+							{#if game.selectedTowers.length === 0 && game.selectedHeroes.length === 0}
+								Оберіть щонайменше 1 інженерну вежу та 1 спеціаліста для виходу на місію.
+							{:else if game.selectedTowers.length === 0}
+								Оберіть щонайменше 1 інженерну вежу для захисту.
+							{:else}
+								Оберіть щонайменше 1 спеціаліста (героя).
+							{/if}
+						</span>
+					{:else if game.selectedTowers.length < 5 || game.selectedHeroes.length < 2}
+						<span class="text-amber-300 font-semibold flex items-center gap-1.5">
+							<span>⚡</span>
+							<span
+								>Челендж-склад ({game.selectedTowers.length}/5 веж, {game.selectedHeroes.length}/2
+								героїв). Гра буде складнішою!</span
+							>
+						</span>
+					{:else}
+						<span class="text-emerald-400 font-semibold flex items-center gap-1.5">
+							<span>✓</span>
+							<span>Повний бойовий склад: 5 веж та 2 спеціалісти готові до бою.</span>
+						</span>
+					{/if}
+				</div>
+
 				<button
+					disabled={!game.canStartMission()}
 					onclick={beginBriefing}
-					class="px-8 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold cursor-pointer"
+					class="px-8 py-3 rounded-xl font-extrabold text-sm transition cursor-pointer flex items-center gap-2 {game.canStartMission()
+						? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/20'
+						: 'bg-slate-800 text-slate-500 border border-slate-700/60 cursor-not-allowed opacity-50'}"
 				>
 					Далі: Вступний брифінг →
 				</button>
