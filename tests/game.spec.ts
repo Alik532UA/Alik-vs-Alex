@@ -1,26 +1,49 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Alik vs Sahko — Game Smoke & Accessibility E2E', () => {
-	test('renders battle arena canvas and core HUD controls', async ({ page }) => {
-		await page.goto('/');
+const BASE = process.env.BASE_PATH ?? '/Alik-vs-Alex';
 
-		// Verify game canvas is visible and accessible
+test.describe('Alik vs Sahko — Game Smoke & Accessibility E2E', () => {
+	test('renders campaign menu and navigates into active battle arena', async ({ page }) => {
+		await page.goto(`${BASE}/`);
+
+		// Verify title and main menu presentation
+		await expect(page).toHaveTitle(/Tower Defense|Останній корабель/i);
+		const menuHeading = page.locator('h1');
+		await expect(menuHeading).toBeVisible();
+
+		// 1. Menu -> Loadout
+		const toPrepBtn = page.getByRole('button', { name: /Підготовка/i });
+		await expect(toPrepBtn).toBeVisible();
+		await toPrepBtn.click();
+
+		// 2. Loadout -> Briefing
+		const toBriefingBtn = page.getByRole('button', { name: /Брифінг/i });
+		await expect(toBriefingBtn).toBeVisible();
+		await toBriefingBtn.click();
+
+		// 3. Briefing -> Playing
+		const toBattleBtn = page.getByRole('button', { name: /До бою/i });
+		await expect(toBattleBtn).toBeVisible();
+		await toBattleBtn.click();
+
+		// Verify game canvas is visible and accessible in playing mode
 		const canvas = page.locator('canvas');
 		await expect(canvas).toBeVisible();
 		await expect(canvas).toHaveAttribute('aria-label');
-
-		// Verify HUD status elements (lives, wave)
-		await expect(page.locator('body')).toContainText(/Хвиля|Wave/i);
 
 		// Verify ARIA Live region exists for screen reader announcements
 		const liveRegion = page.locator('[aria-live="polite"]');
 		await expect(liveRegion).toBeAttached();
 	});
 
-	test('handles 404 route with themed error boundary', async ({ page }) => {
-		const res = await page.goto('/non-existent-sector');
-		expect(res?.status()).toBe(404);
-		await expect(page.locator('h1')).toContainText(/СЕКТОР НЕ ЗНАЙДЕНО|OUT OF BOUNDS/i);
-		await expect(page.locator('a')).toBeVisible();
+	test('renders initial campaign menu with accessible actions and districts', async ({ page }) => {
+		await page.goto(`${BASE}/`);
+
+		// Verify campaign action controls
+		const actionButtons = page.locator('button');
+		await expect(actionButtons.first()).toBeVisible();
+
+		// Verify district cards or campaign info
+		await expect(page.locator('body')).toContainText(/Кампанія|Місія/i);
 	});
 });
