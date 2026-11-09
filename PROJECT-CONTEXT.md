@@ -108,6 +108,8 @@
   - Відновлює сторінку при застарілих чанках нової збірки (`chunkMissing` + `reloadOnce`).
 - **Межа помилок Svelte 5 (`<svelte:boundary>`)**:
   - Інтерфейс у `src/routes/+layout.svelte` захищено компонентом `ErrorFallback.svelte`.
+- **Канонічна сторінка помилок (`src/routes/+error.svelte`)**:
+  - Тематичний термінальний екран 404 / 500 для захисту від навігації за межі захищеного сектору бази.
 
 ---
 
@@ -123,7 +125,8 @@
 
 - `npm run check`: перевірка типів TypeScript та синтаксису Svelte 5 Runes через `svelte-check`.
 - `npm run lint`: повний лінтинг форматування (Prettier) та коду (ESLint Flat Config).
-- `npm run test:unit`: набір юніт-тестів Vitest (9 файлів, рушій, хвилі, карти, аудіо, сховище, безпека, CSP).
+- `npm run test:unit`: набір юніт-тестів Vitest (11 файлів, 44 тести: рушій, хвилі, карти, аудіо, збереження прогресу saveState, схеми рівнів levelSchema, сховище, безпека, CSP).
+- `npm run test:e2e`: Playwright E2E автоматизовані браузерні тести перевірки бойової арени та доступності (`tests/game.spec.ts`).
 - `npm run check:build`: автоматичний гейт якості зібраного сайту (`build/index.html`, `build/sitemap.xml`).
 - `npm run audit:ci`: строгий автоматичний аудит безпеки npm-пакетів.
 - Всі перевірки вбудовані у CI/CD workflow [.github/workflows/deploy.yml](.github/workflows/deploy.yml).

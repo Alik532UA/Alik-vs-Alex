@@ -14,6 +14,7 @@
 	import type { TowerId, HeroId, TowerConfig, HeroConfig, EnemyConfig } from '$lib/game/types';
 	import { asset } from '$app/paths';
 	import { getTranslation, getTargetDomainLabel } from '$lib/i18n/game';
+	import { gameA11y } from '$lib/game/a11y';
 
 	const towerList: TowerConfig[] = Object.values(TOWERS);
 	const heroList: HeroConfig[] = Object.values(HEROES);
@@ -1228,12 +1229,18 @@
 
 			<!-- Main Interactive Battle Arena -->
 			<div class="relative rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
+				<div class="sr-only" aria-live="polite" aria-atomic="true">
+					{gameA11y.getAnnouncement() ||
+						`Хвиля ${game.currentWave} з ${game.totalWaves}, життів ${game.lives}, кредитів ${game.currency}`}
+				</div>
 				<canvas
 					bind:this={canvas}
 					width="1100"
 					height="600"
+					tabindex="0"
+					aria-label="Ігрове поле космічної колонії: захисні вежі, сітка секторів та шлях прибульців"
 					onclick={handleCanvasClick}
-					class="w-full h-auto block cursor-crosshair"
+					class="w-full h-auto block cursor-crosshair focus:outline-none focus:ring-2 focus:ring-cyan-400"
 				></canvas>
 
 				<!-- Victory / Defeat Modal -->

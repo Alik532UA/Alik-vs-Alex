@@ -46,7 +46,24 @@ npm run check       # Перевірка типів Svelte 5 та TypeScript
 npm run lint        # Повний лінтинг коду та форматування (Prettier + ESLint)
 npm run format      # Автоматичне виправлення форматування коду
 npm run test:unit   # Запуск юніт-тестів Vitest
+npm run test:e2e    # Запуск Playwright E2E тестів
 npm run build       # Збірка продакшн-версії та генерація sitemap.xml
 npm run check:build # Перевірка артефактів збірки
 npm run audit:ci    # Аудит безпеки залежностей npm
 ```
+
+---
+
+## 4. Пам'ятка AI щодо ігрового рушія та координат
+
+- **Координатна система**:
+  - Сітка поля: $16 \times 10$ клітинок (`gridWidth: 16`, `gridHeight: 10`).
+  - Розмір клітинки в Canvas: $1100 / 16 \approx 68.75\text{px}$ по горизонталі, $600 / 10 = 60\text{px}$ по вертикалі.
+- **Життєвий цикл симуляції**:
+  - `requestAnimationFrame` викликає метод `tick(deltaMs)` рушія.
+  - Оновлення ворогів (рух за точками шляху `pathWaypoints`, накладання статусів сповільнення/отруєння).
+  - Пошук цілей вежами за обраною стратегією (`closest`, `weakest`, `strongest`, `first`).
+  - Відмальовування снарядів та спалахів у Canvas context.
+- **Збереження прогресу та кастомні рівні**:
+  - Керується через `saveManager` (`src/lib/game/saveState.ts`) під ізольованим префіксом `alikvsalex_`.
+  - Валідація нових рівнів здійснюється через `validateCustomLevel` (`src/lib/game/levelSchema.ts`).

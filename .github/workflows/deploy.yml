@@ -45,6 +45,14 @@ jobs:
         if: ${{ !cancelled() }}
         run: npm run test:unit
 
+      - name: Install Playwright browsers
+        if: ${{ !cancelled() }}
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright E2E tests
+        if: ${{ !cancelled() }}
+        run: npm run test:e2e
+
       - name: Resolve base path and origin
         id: site
         if: ${{ !cancelled() }}
