@@ -15,16 +15,10 @@ export function getTowerAssetPath(id: TowerId, level: number = 1): AssetPath {
 }
 
 export function getEnemyAssetPath(id: EnemyId): AssetPath {
-	if (id === 'armored_beetle') {
-		return 'assets/sprites/enemies/armored_beetle.jpg' as AssetPath;
-	}
 	return `assets/sprites/enemies/${id}.png` as AssetPath;
 }
 
 export function getHeroAssetPath(id: HeroId): AssetPath {
-	if (id === 'fastener_hero') {
-		return 'assets/sprites/heroes/fastener_hero.jpg' as AssetPath;
-	}
 	return `assets/sprites/heroes/${id}.png` as AssetPath;
 }
 

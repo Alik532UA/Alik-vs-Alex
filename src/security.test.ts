@@ -47,4 +47,27 @@ describe('Security Invariants (SECURITY-v10)', () => {
 			expect(content).not.toMatch(/\b(?:window\.)?(?:localStorage|sessionStorage)\./);
 		}
 	});
+
+	it('language policy: Russian locale (ru) is strictly prohibited in source code', () => {
+		const srcFiles: string[] = [];
+		function getSrcFiles(dir: string) {
+			for (const entry of readdirSync(dir)) {
+				const full = join(dir, entry);
+				if (statSync(full).isDirectory()) {
+					getSrcFiles(full);
+				} else if (
+					(entry.endsWith('.ts') || entry.endsWith('.svelte')) &&
+					!entry.endsWith('.test.ts')
+				) {
+					srcFiles.push(full);
+				}
+			}
+		}
+		getSrcFiles('src');
+		for (const file of srcFiles) {
+			const content = readFileSync(file, 'utf-8');
+			expect(content).not.toMatch(/['"]ru['"]/);
+			expect(content).not.toMatch(/\b(russian|русск)\b/i);
+		}
+	});
 });

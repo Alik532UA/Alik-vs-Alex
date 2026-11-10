@@ -32,7 +32,7 @@ export const LOADOUT_PRESETS: Record<'balance' | 'heavy' | 'control', LoadoutPre
 	balance: {
 		id: 'balance',
 		name: 'Баланс',
-		icon: '🛡️',
+		icon: 'shield',
 		description: 'Універсальний набір: затримка, лазер, пробиття та монтаж',
 		towers: ['robot_line', 'drill', 'mining_laser', 'fastener', 'pile_driver'],
 		heroes: ['fastener_hero', 'exosuit_hero']
@@ -40,7 +40,7 @@ export const LOADOUT_PRESETS: Record<'balance' | 'heavy' | 'control', LoadoutPre
 	heavy: {
 		id: 'heavy',
 		name: 'Важкий',
-		icon: '💥',
+		icon: 'bomb',
 		description: 'Бронебійні знаряддя, важкі крани та штурмові екзокостюми',
 		towers: ['pile_driver', 'crane', 'exosuit', 'drill', 'mining_laser'],
 		heroes: ['exosuit_hero', 'laser_hero']
@@ -48,7 +48,7 @@ export const LOADOUT_PRESETS: Record<'balance' | 'heavy' | 'control', LoadoutPre
 	control: {
 		id: 'control',
 		name: 'Контроль',
-		icon: '🌪️',
+		icon: 'wind',
 		description: 'Сповільнення сейсмікою, мінні загородження та площадна зачистка',
 		towers: ['drill', 'mine_layer', 'robot_line', 'crane', 'fastener'],
 		heroes: ['flamer_hero', 'chemist_hero']

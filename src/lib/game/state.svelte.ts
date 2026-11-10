@@ -48,8 +48,13 @@ class GameController {
 
 	loadSavedLocale() {
 		const saved = storage.get('settings_locale');
-		if (saved === 'uk' || saved === 'en' || saved === 'ru') {
+		if (saved === 'uk' || saved === 'en') {
 			this.locale = saved;
+		} else {
+			this.locale = 'uk';
+			if (saved) {
+				storage.set('settings_locale', 'uk');
+			}
 		}
 	}
 

@@ -208,7 +208,7 @@ export class TDGameEngine {
 				ttl: 1.2,
 				maxTtl: 1.2,
 				kind: 'text',
-				text: `+${waveCfg.earlyCallBonus}⚡ Достроково!`
+				text: `+${waveCfg.earlyCallBonus} Достроково!`
 			});
 		}
 

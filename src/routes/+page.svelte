@@ -15,6 +15,33 @@
 	import { asset } from '$app/paths';
 	import { getTranslation, getTargetDomainLabel } from '$lib/i18n/game';
 	import { gameA11y } from '$lib/game/a11y';
+	import {
+		BookOpen,
+		Lightning,
+		Shield,
+		Bomb,
+		Wind,
+		Trash,
+		DiceFive,
+		Check,
+		Lock,
+		Star,
+		MagnifyingGlass,
+		Heart,
+		Sword,
+		Target,
+		Timer,
+		X,
+		Warning,
+		Waves,
+		Bell,
+		Play,
+		Pause,
+		Wrench,
+		Lightbulb,
+		Globe,
+		Sparkle
+	} from 'phosphor-svelte';
 
 	const towerList: TowerConfig[] = Object.values(TOWERS);
 	const heroList: HeroConfig[] = Object.values(HEROES);
@@ -466,7 +493,7 @@
 <div
 	class="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 select-none"
 >
-	<!-- Global Top Utility Bar with Language Switcher (UA / EN / RU) -->
+	<!-- Global Top Utility Bar with Language Switcher (UA / EN) -->
 	<header class="w-full max-w-6xl flex items-center justify-between py-2 px-1 mb-2 text-xs">
 		<div class="flex items-center gap-2">
 			<span class="font-extrabold text-amber-400 tracking-wider uppercase text-sm"
@@ -476,7 +503,7 @@
 			<span class="text-slate-400 hidden sm:inline">{t.subtitle}</span>
 		</div>
 		<div class="flex items-center gap-2.5">
-			<!-- Language Switcher (UA / EN / RU) -->
+			<!-- Language Switcher (UA / EN) -->
 			<div
 				class="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5 shadow-sm"
 				role="group"
@@ -485,35 +512,26 @@
 				<button
 					type="button"
 					onclick={() => game.setLocale('uk')}
-					class="px-2.5 py-1 rounded-md font-bold text-xs transition cursor-pointer {game.locale ===
+					class="px-2.5 py-1 rounded-md font-bold text-xs transition cursor-pointer flex items-center gap-1 {game.locale ===
 					'uk'
 						? 'bg-amber-500 text-slate-950 shadow'
 						: 'text-slate-400 hover:text-white'}"
 					title="Українська"
 				>
-					🇺🇦 UA
+					<Globe size={13} weight={game.locale === 'uk' ? 'fill' : 'regular'} />
+					<span>UA</span>
 				</button>
 				<button
 					type="button"
 					onclick={() => game.setLocale('en')}
-					class="px-2.5 py-1 rounded-md font-bold text-xs transition cursor-pointer {game.locale ===
+					class="px-2.5 py-1 rounded-md font-bold text-xs transition cursor-pointer flex items-center gap-1 {game.locale ===
 					'en'
 						? 'bg-amber-500 text-slate-950 shadow'
 						: 'text-slate-400 hover:text-white'}"
 					title="English"
 				>
-					🇬🇧 EN
-				</button>
-				<button
-					type="button"
-					onclick={() => game.setLocale('ru')}
-					class="px-2.5 py-1 rounded-md font-bold text-xs transition cursor-pointer {game.locale ===
-					'ru'
-						? 'bg-amber-500 text-slate-950 shadow'
-						: 'text-slate-400 hover:text-white'}"
-					title="Русский"
-				>
-					🏳️ RU
+					<Globe size={13} weight={game.locale === 'en' ? 'fill' : 'regular'} />
+					<span>EN</span>
 				</button>
 			</div>
 
@@ -522,7 +540,7 @@
 				onclick={() => (encyclopediaOpen = true)}
 				class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 font-bold transition cursor-pointer flex items-center gap-1.5 shadow-sm"
 			>
-				<span>📖</span>
+				<BookOpen size={16} weight="bold" />
 				<span class="hidden sm:inline">Довідник</span>
 			</button>
 		</div>
@@ -581,7 +599,8 @@
 					onclick={() => (encyclopediaOpen = true)}
 					class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 font-bold text-sm transition cursor-pointer flex items-center gap-2"
 				>
-					<span>📖 Довідник обладнання та фауни (47 артів)</span>
+					<BookOpen size={18} weight="bold" class="text-amber-400" />
+					<span>Довідник обладнання та фауни (47 артів)</span>
 				</button>
 				<button
 					onclick={() => (game.screen = 'loadout')}
@@ -608,8 +627,11 @@
 				<div class="flex items-center gap-3">
 					<button
 						onclick={() => (encyclopediaOpen = true)}
-						class="text-xs text-amber-400 hover:underline cursor-pointer">📖 Довідник</button
+						class="text-xs text-amber-400 hover:underline cursor-pointer flex items-center gap-1"
 					>
+						<BookOpen size={13} weight="bold" />
+						<span>Довідник</span>
+					</button>
 					<button
 						onclick={() => (game.screen = 'menu')}
 						class="text-sm text-slate-400 hover:text-white cursor-pointer">← Назад у меню</button
@@ -624,7 +646,8 @@
 				<span
 					class="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 flex items-center gap-1.5"
 				>
-					<span>⚡</span> Пресети:
+					<Lightning size={14} weight="fill" class="text-amber-400" />
+					<span>Пресети:</span>
 				</span>
 				<button
 					type="button"
@@ -635,7 +658,8 @@
 					class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs transition cursor-pointer flex items-center gap-1.5 border border-slate-700 hover:border-amber-400 shadow-sm"
 					title="Згенерувати 5 випадкових веж та 2 випадкових героїв"
 				>
-					<span>🎲</span> <span>Випадковий</span>
+					<DiceFive size={15} weight="bold" />
+					<span>Випадковий</span>
 				</button>
 				<button
 					type="button"
@@ -649,7 +673,8 @@
 						: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
 					title="Універсальний набір: затримка, лазер, пробиття та монтаж"
 				>
-					<span>🛡️</span> <span>Баланс</span>
+					<Shield size={15} weight="fill" />
+					<span>Баланс</span>
 				</button>
 				<button
 					type="button"
@@ -663,7 +688,8 @@
 						: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
 					title="Бронебійні знаряддя, важкі крани та штурмові екзокостюми"
 				>
-					<span>💥</span> <span>Важкий</span>
+					<Bomb size={15} weight="fill" />
+					<span>Важкий</span>
 				</button>
 				<button
 					type="button"
@@ -677,7 +703,8 @@
 						: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
 					title="Сповільнення сейсмікою, мінні загородження та зачистка"
 				>
-					<span>🌪️</span> <span>Контроль</span>
+					<Wind size={15} weight="bold" />
+					<span>Контроль</span>
 				</button>
 				<div class="h-5 w-px bg-slate-800 mx-1"></div>
 				<button
@@ -689,7 +716,8 @@
 					class="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:border-rose-500/60 font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
 					title="Скинути весь вибір (0 веж, 0 героїв)"
 				>
-					<span>🗑️</span> <span>Очистити</span>
+					<Trash size={15} weight="bold" />
+					<span>Очистити</span>
 				</button>
 			</div>
 
@@ -733,15 +761,17 @@
 								>
 									{#if isSelected}
 										<span
-											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 shadow"
+											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 shadow flex items-center gap-1"
 										>
-											✓ {t.selectedBadge}
+											<Check size={11} weight="bold" />
+											<span>{t.selectedBadge}</span>
 										</span>
 									{:else if isDimmed}
 										<span
-											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900/90 text-slate-400 border border-slate-800"
+											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900/90 text-slate-400 border border-slate-800 flex items-center gap-1"
 										>
-											🔒 5/5
+											<Lock size={11} weight="bold" />
+											<span>5/5</span>
 										</span>
 									{/if}
 									<div
@@ -759,9 +789,11 @@
 												>{tItem.name}</span
 											>
 											<span
-												class="text-[11px] px-1.5 py-0.5 rounded bg-slate-900 font-bold shrink-0 text-amber-400"
-												>{tItem.levels[0].cost}⚡</span
+												class="text-[11px] px-1.5 py-0.5 rounded bg-slate-900 font-bold shrink-0 text-amber-400 flex items-center gap-0.5"
 											>
+												<span>{tItem.levels[0].cost}</span>
+												<Lightning size={11} weight="fill" />
+											</span>
 										</div>
 										<p class="text-[11px] text-slate-400 mt-1 line-clamp-2">{tItem.role}</p>
 									</div>
@@ -822,15 +854,17 @@
 								>
 									{#if isSelected}
 										<span
-											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 shadow"
+											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 shadow flex items-center gap-1"
 										>
-											★ {t.inSquad}
+											<Star size={11} weight="fill" />
+											<span>{t.inSquad}</span>
 										</span>
 									{:else if isDimmed}
 										<span
-											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900/90 text-slate-400 border border-slate-800"
+											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900/90 text-slate-400 border border-slate-800 flex items-center gap-1"
 										>
-											🔒 2/2
+											<Lock size={11} weight="bold" />
+											<span>2/2</span>
 										</span>
 									{/if}
 									<div
@@ -845,8 +879,11 @@
 									<div>
 										<div class="font-bold text-xs truncate" style="color: {h.color}">{h.name}</div>
 										<div class="text-[10px] text-slate-400 truncate">{h.profession}</div>
-										<div class="mt-1 text-[11px] text-emerald-300 font-semibold truncate">
-											★ {h.abilityName}
+										<div
+											class="mt-1 text-[11px] text-emerald-300 font-semibold truncate flex items-center gap-1"
+										>
+											<Star size={11} weight="fill" class="shrink-0 text-emerald-400" />
+											<span class="truncate">{h.abilityName}</span>
 										</div>
 									</div>
 								</div>
@@ -867,19 +904,22 @@
 								<span
 									class="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5"
 								>
-									<span>🔎</span> <span>{t.heroInspectorTitle}</span>
+									<MagnifyingGlass size={15} weight="bold" />
+									<span>{t.heroInspectorTitle}</span>
 								</span>
 								{#if inSquad}
 									<span
-										class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+										class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1"
 									>
-										✓ {t.inSquad}
+										<Check size={11} weight="bold" />
+										<span>{t.inSquad}</span>
 									</span>
 								{:else if squadFull}
 									<span
-										class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40"
+										class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1"
 									>
-										🔒 2/2 Ліміт
+										<Lock size={11} weight="bold" />
+										<span>2/2 Ліміт</span>
 									</span>
 								{:else}
 									<span
@@ -915,26 +955,39 @@
 							<div class="grid grid-cols-2 gap-2 text-xs">
 								<div class="p-2 rounded-lg bg-slate-900 border border-slate-800/80">
 									<span class="text-slate-400 text-[10px] block">{t.heroStatsHp}</span>
-									<span class="font-bold text-rose-400">❤️ {inspectedHero.hp}</span>
+									<span class="font-bold text-rose-400 flex items-center gap-1">
+										<Heart size={14} weight="fill" />
+										<span>{inspectedHero.hp}</span>
+									</span>
 								</div>
 								<div class="p-2 rounded-lg bg-slate-900 border border-slate-800/80">
 									<span class="text-slate-400 text-[10px] block">{t.heroStatsDamage}</span>
-									<span class="font-bold text-amber-300">⚔️ {inspectedHero.damage}</span>
+									<span class="font-bold text-amber-300 flex items-center gap-1">
+										<Sword size={14} weight="fill" />
+										<span>{inspectedHero.damage}</span>
+									</span>
 								</div>
 								<div class="p-2 rounded-lg bg-slate-900 border border-slate-800/80">
 									<span class="text-slate-400 text-[10px] block">{t.heroStatsRange}</span>
-									<span class="font-bold text-sky-300">🎯 {inspectedHero.range}px</span>
+									<span class="font-bold text-sky-300 flex items-center gap-1">
+										<Target size={14} weight="bold" />
+										<span>{inspectedHero.range}px</span>
+									</span>
 								</div>
 								<div class="p-2 rounded-lg bg-slate-900 border border-slate-800/80">
 									<span class="text-slate-400 text-[10px] block">{t.heroStatsCooldown}</span>
-									<span class="font-bold text-purple-300">⏱️ {inspectedHero.abilityCooldown}с</span>
+									<span class="font-bold text-purple-300 flex items-center gap-1">
+										<Timer size={14} weight="bold" />
+										<span>{inspectedHero.abilityCooldown}с</span>
+									</span>
 								</div>
 							</div>
 
 							<!-- Complete Uncut Ability Description -->
 							<div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
 								<div class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-									<span>★</span> <span>{inspectedHero.abilityName}</span>
+									<Star size={14} weight="fill" />
+									<span>{inspectedHero.abilityName}</span>
 								</div>
 								<p class="text-xs text-slate-300 leading-relaxed">
 									{inspectedHero.abilityDesc}
@@ -952,7 +1005,8 @@
 										}}
 										class="w-full py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
 									>
-										<span>✕</span> <span>Вилучити із загону</span>
+										<X size={14} weight="bold" />
+										<span>Вилучити із загону</span>
 									</button>
 								{:else if squadFull}
 									<div
@@ -984,7 +1038,7 @@
 				<div class="text-xs">
 					{#if game.selectedTowers.length === 0 || game.selectedHeroes.length === 0}
 						<span class="text-rose-400 font-semibold flex items-center gap-1.5">
-							<span>⚠️</span>
+							<Warning size={16} weight="fill" />
 							{#if game.selectedTowers.length === 0 && game.selectedHeroes.length === 0}
 								Оберіть щонайменше 1 інженерну вежу та 1 спеціаліста для виходу на місію.
 							{:else if game.selectedTowers.length === 0}
@@ -995,7 +1049,7 @@
 						</span>
 					{:else if game.selectedTowers.length < 5 || game.selectedHeroes.length < 2}
 						<span class="text-amber-300 font-semibold flex items-center gap-1.5">
-							<span>⚡</span>
+							<Lightning size={16} weight="fill" />
 							<span
 								>Челендж-склад ({game.selectedTowers.length}/5 веж, {game.selectedHeroes.length}/2
 								героїв). Гра буде складнішою!</span
@@ -1003,7 +1057,7 @@
 						</span>
 					{:else}
 						<span class="text-emerald-400 font-semibold flex items-center gap-1.5">
-							<span>✓</span>
+							<Check size={16} weight="bold" />
 							<span>Повний бойовий склад: 5 веж та 2 спеціалісти готові до бою.</span>
 						</span>
 					{/if}
@@ -1061,7 +1115,7 @@
 					<h4
 						class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5"
 					>
-						<span>🛡️</span>
+						<Shield size={15} weight="fill" />
 						<span
 							>{t.missionSquad} ({game.selectedTowers.length}/5 веж, {game.selectedHeroes.length}/2
 							спеціалісти)</span
@@ -1100,7 +1154,10 @@
 									<div class="font-bold text-xs truncate" style="color: {hero.color}">
 										{hero.name}
 									</div>
-									<div class="text-[11px] text-emerald-400 truncate">★ {hero.abilityName}</div>
+									<div class="text-[11px] text-emerald-400 truncate flex items-center gap-1">
+										<Star size={11} weight="fill" class="shrink-0" />
+										<span class="truncate">{hero.abilityName}</span>
+									</div>
 								</div>
 							</div>
 						{/each}
@@ -1130,7 +1187,12 @@
 								<div class="font-bold text-[11px] truncate w-full" style="color: {twr.color}">
 									{twr.name}
 								</div>
-								<div class="text-[10px] text-amber-400 font-semibold">{twr.levels[0].cost}⚡</div>
+								<div
+									class="text-[10px] text-amber-400 font-semibold flex items-center justify-center gap-0.5"
+								>
+									<span>{twr.levels[0].cost}</span>
+									<Lightning size={10} weight="fill" />
+								</div>
 							</div>
 						{/each}
 					</div>
@@ -1160,35 +1222,49 @@
 				class="flex flex-wrap items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 gap-3"
 			>
 				<div class="flex items-center gap-5">
-					<div class="text-sm font-bold text-rose-400">
-						❤️ Життя: <span class="text-lg">{game.lives}</span>
+					<div class="text-sm font-bold text-rose-400 flex items-center gap-1.5">
+						<Heart size={18} weight="fill" />
+						<span>Життя: <span class="text-lg">{game.lives}</span></span>
 					</div>
-					<div class="text-sm font-bold text-amber-400">
-						⚡ Ресурси: <span class="text-lg">{game.currency}</span>
+					<div class="text-sm font-bold text-amber-400 flex items-center gap-1.5">
+						<Lightning size={18} weight="fill" />
+						<span>Ресурси: <span class="text-lg">{game.currency}</span></span>
 					</div>
-					<div class="text-sm font-bold text-sky-400">
-						🌊 Хвиля: <span class="text-lg">{game.currentWave} / {game.totalWaves}</span>
+					<div class="text-sm font-bold text-sky-400 flex items-center gap-1.5">
+						<Waves size={18} weight="bold" />
+						<span>Хвиля: <span class="text-lg">{game.currentWave} / {game.totalWaves}</span></span>
 					</div>
 				</div>
 
 				{#if !game.isPaused && game.currentWave < game.totalWaves}
 					<button
 						onclick={() => engine.callNextWave(true)}
-						class="px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500 text-amber-300 hover:bg-amber-500/30 text-xs font-bold cursor-pointer"
+						class="px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500 text-amber-300 hover:bg-amber-500/30 text-xs font-bold cursor-pointer flex items-center gap-1.5"
 					>
-						🔔 Дострокова хвиля (+{game.mission.waves[game.currentWave]?.earlyCallBonus ?? 0}⚡)
-						{#if !game.waveActive}({Math.ceil(game.nextWaveCountdown)}с){/if}
+						<Bell size={14} weight="fill" />
+						<span
+							>Дострокова хвиля (+{game.mission.waves[game.currentWave]?.earlyCallBonus ?? 0}</span
+						>
+						<Lightning size={11} weight="fill" />
+						<span>)</span>
+						{#if !game.waveActive}<span>({Math.ceil(game.nextWaveCountdown)}с)</span>{/if}
 					</button>
 				{/if}
 
 				<div class="flex items-center gap-2">
 					<button
 						onclick={() => (game.isPaused = !game.isPaused)}
-						class="px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer {game.isPaused
+						class="px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer flex items-center gap-1.5 {game.isPaused
 							? 'bg-amber-500 text-slate-950 border-amber-400'
 							: 'bg-slate-800 border-slate-700'}"
 					>
-						{game.isPaused ? '▶ Зняти з паузи' : '⏸ Пауза огляду'}
+						{#if game.isPaused}
+							<Play size={13} weight="fill" />
+							<span>Зняти з паузи</span>
+						{:else}
+							<Pause size={13} weight="fill" />
+							<span>Пауза огляду</span>
+						{/if}
 					</button>
 					<button
 						onclick={() => (game.gameSpeed = game.gameSpeed === 1 ? 2 : 1)}
@@ -1198,17 +1274,20 @@
 					</button>
 					<button
 						onclick={() => (encyclopediaOpen = true)}
-						class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-amber-300 cursor-pointer"
+						class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-amber-300 cursor-pointer flex items-center justify-center"
 						title="Довідник веж та фауни"
 					>
-						📖
+						<BookOpen size={15} weight="bold" />
 					</button>
 					<button
 						onclick={() => (game.editorMode = !game.editorMode)}
-						class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-400 cursor-pointer"
+						class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-400 cursor-pointer flex items-center gap-1"
 						title="Клік: додати точку шляху, Shift+Клік: додати слот вежі"
 					>
-						{game.editorMode ? '🛠 Редактор ON' : '🛠'}
+						<Wrench size={14} weight="bold" />
+						{#if game.editorMode}
+							<span>Редактор ON</span>
+						{/if}
 					</button>
 					<button
 						onclick={() => (game.screen = 'menu')}
@@ -1250,7 +1329,11 @@
 							class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-md w-full text-center space-y-4"
 						>
 							{#if game.outcome === 'victory'}
-								<div class="text-4xl">⭐⭐⭐</div>
+								<div class="flex justify-center items-center gap-2 text-amber-400">
+									<Star size={36} weight="fill" />
+									<Star size={44} weight="fill" />
+									<Star size={36} weight="fill" />
+								</div>
 								<h3 class="text-3xl font-extrabold text-emerald-400">МАЙСТЕРНЮ ВРЯТОВАНО!</h3>
 								<p class="text-slate-300 text-sm">
 									Зірок здобуто: {game.starsEarned} / 3 (Залишок життів: {game.lives})
@@ -1326,11 +1409,14 @@
 							<button
 								disabled={game.isPaused || h.respawnTimer > 0 || h.abilityCooldownTimer > 0}
 								onclick={() => engine.triggerHeroAbility(h.id)}
-								class="mt-2 w-full py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-[11px] font-bold disabled:opacity-40 cursor-pointer truncate"
+								class="mt-2 w-full py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-[11px] font-bold disabled:opacity-40 cursor-pointer truncate flex items-center justify-center gap-1"
 							>
-								{h.abilityCooldownTimer > 0
-									? `${cfg.abilityName} (${Math.ceil(h.abilityCooldownTimer)}с)`
-									: `★ ${cfg.abilityName}`}
+								{#if h.abilityCooldownTimer > 0}
+									<span>{cfg.abilityName} ({Math.ceil(h.abilityCooldownTimer)}с)</span>
+								{:else}
+									<Star size={11} weight="fill" />
+									<span>{cfg.abilityName}</span>
+								{/if}
 							</button>
 						</div>
 					{/each}
@@ -1365,7 +1451,10 @@
 											<div class="font-bold text-xs truncate" style="color: {t.color}">
 												{t.name}
 											</div>
-											<div class="text-[11px] text-amber-400 font-bold">{t.levels[0].cost}⚡</div>
+											<div class="text-[11px] text-amber-400 font-bold flex items-center gap-0.5">
+												<span>{t.levels[0].cost}</span>
+												<Lightning size={11} weight="fill" />
+											</div>
 										</div>
 									</button>
 								{/each}
@@ -1413,7 +1502,11 @@
 												alt="Next"
 												class="w-5 h-5 object-contain"
 											/>
-											<span>Покращити до L{existing.level + 1} ({nextStats.cost}⚡)</span>
+											<span class="flex items-center gap-1">
+												<span>Покращити до L{existing.level + 1} ({nextStats.cost}</span>
+												<Lightning size={11} weight="fill" />
+												<span>)</span>
+											</span>
 										</button>
 									{/if}
 									<button
@@ -1427,11 +1520,14 @@
 							</div>
 						{/if}
 					{:else}
-						<div class="text-xs text-slate-400 flex items-center justify-between h-full">
-							<span
-								>💡 Клікніть на круглий будівельний слот (+), щоб звести вежу, або оберіть героя для
-								переміщення по полю.</span
-							>
+						<div class="text-xs text-slate-400 flex items-center justify-between h-full gap-2">
+							<div class="flex items-center gap-1.5">
+								<Lightbulb size={16} weight="fill" class="text-amber-400 shrink-0" />
+								<span
+									>Клікніть на круглий будівельний слот (+), щоб звести вежу, або оберіть героя для
+									переміщення по полю.</span
+								>
+							</div>
 							{#if game.editorMode}
 								<button
 									onclick={() =>
@@ -1503,9 +1599,10 @@
 						</div>
 						<button
 							onclick={() => (encyclopediaOpen = false)}
-							class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
+							class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer flex items-center justify-center"
+							aria-label="Закрити"
 						>
-							✕
+							<X size={15} weight="bold" />
 						</button>
 					</div>
 				</div>
@@ -1574,7 +1671,10 @@
 												<span class="text-xs font-bold text-amber-400"
 													>{t.levelLabel} {lvl.level}</span
 												>
-												<span class="text-xs font-bold text-slate-300">{lvl.cost}⚡</span>
+												<span class="text-xs font-bold text-slate-300 flex items-center gap-0.5">
+													<span>{lvl.cost}</span>
+													<Lightning size={11} weight="fill" />
+												</span>
 											</div>
 
 											<!-- Fixed Stats Block (with Robot Damage & Unit Stats) -->
@@ -1649,7 +1749,10 @@
 											</div>
 											<div class="flex justify-between">
 												<span>Броня: {Math.round(e.armor * 100)}%</span>
-												<span class="text-amber-400">+{e.reward}⚡</span>
+												<span class="text-amber-400 flex items-center gap-0.5">
+													<span>+{e.reward}</span>
+													<Lightning size={11} weight="fill" />
+												</span>
 											</div>
 										</div>
 									</div>
@@ -1659,16 +1762,28 @@
 										class="h-10 flex flex-col justify-center pt-1 border-t border-slate-800/60 mt-1.5 overflow-hidden text-[10px]"
 									>
 										{#if e.canJump}
-											<div class="text-amber-300 truncate">★ Стрибок через перешкоди</div>
+											<div class="text-amber-300 truncate flex items-center gap-1">
+												<Sparkle size={11} weight="fill" class="shrink-0" />
+												<span class="truncate">Стрибок через перешкоди</span>
+											</div>
 										{/if}
 										{#if e.spawnsOnDeath}
-											<div class="text-rose-300 truncate">★ Розпадається при смерті</div>
+											<div class="text-rose-300 truncate flex items-center gap-1">
+												<Sparkle size={11} weight="fill" class="shrink-0" />
+												<span class="truncate">Розпадається при смерті</span>
+											</div>
 										{/if}
 										{#if e.periodicSpawn}
-											<div class="text-purple-300 truncate">★ Породжує зграю в польоті</div>
+											<div class="text-purple-300 truncate flex items-center gap-1">
+												<Sparkle size={11} weight="fill" class="shrink-0" />
+												<span class="truncate">Породжує зграю в польоті</span>
+											</div>
 										{/if}
 										{#if e.shieldAuraRadius}
-											<div class="text-cyan-300 truncate">★ Аура щита союзникам</div>
+											<div class="text-cyan-300 truncate flex items-center gap-1">
+												<Shield size={11} weight="fill" class="shrink-0" />
+												<span class="truncate">Аура щита союзникам</span>
+											</div>
 										{/if}
 										{#if !e.canJump && !e.spawnsOnDeath && !e.periodicSpawn && !e.shieldAuraRadius}
 											<div class="text-slate-500 italic">— Базовий штурмовик —</div>
@@ -1715,7 +1830,10 @@
 									<div
 										class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 min-h-[96px] flex flex-col justify-between"
 									>
-										<div class="text-xs font-bold text-emerald-400">★ {h.abilityName}</div>
+										<div class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+											<Star size={11} weight="fill" class="shrink-0" />
+											<span class="truncate">{h.abilityName}</span>
+										</div>
 										<p class="text-[11px] text-slate-400 leading-tight mt-1">{h.abilityDesc}</p>
 									</div>
 								</div>

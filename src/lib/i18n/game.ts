@@ -1,4 +1,4 @@
-export type GameLocale = 'uk' | 'en' | 'ru';
+export type GameLocale = 'uk' | 'en';
 
 export interface GameTranslations {
 	title: string;
@@ -88,7 +88,7 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		robotCount: 'Ліміт ботів',
 		levelLabel: 'Рівень',
 
-		encyclopediaTitle: '📖 Довідник обладнання та фауни',
+		encyclopediaTitle: 'Довідник обладнання та фауни',
 		encyclopediaSubtitle: 'Повний каталог промислової зброї колонії та ворожих мутантів',
 		tabTowers: 'Вежі (8 типів / 32 рівні)',
 		tabEnemies: 'Фауна (10 ворогів)',
@@ -140,7 +140,7 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		robotCount: 'Bot Limit',
 		levelLabel: 'Level',
 
-		encyclopediaTitle: '📖 Equipment & Fauna Guide',
+		encyclopediaTitle: 'Equipment & Fauna Guide',
 		encyclopediaSubtitle: 'Full catalog of industrial colony weaponry and mutant hostiles',
 		tabTowers: 'Towers (8 types / 32 levels)',
 		tabEnemies: 'Fauna (10 enemies)',
@@ -160,58 +160,6 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		btnBriefing: 'Next: Mission Briefing →',
 		btnToBattle: 'To Battle!',
 		btnChangeLoadout: '← Change Loadout'
-	},
-	ru: {
-		title: 'Алик против Сахко',
-		subtitle: 'Тактическая оборона космической мастерской',
-		waves: 'Волна',
-		scrap: 'Лом',
-		health: 'Прочность базы',
-		startWave: 'Начать волну',
-		pause: 'Пауза',
-		resume: 'Продолжить',
-		speed: 'Скорость',
-		victory: 'Победа! Сектор зачищен',
-		defeat: 'Мастерская разрушена!',
-		restart: 'Играть снова',
-		gridCursor: 'Курсор сетки',
-		towerPlaced: 'Башня построена',
-		insufficientScrap: 'Недостаточно лома для постройки',
-		hotkeysHelp: 'Пробел: пауза, 1-2: скорость, Стрелки: сетка, Enter: постройка',
-
-		targetLabel: 'Цель',
-		targetGround: 'земля',
-		targetAir: 'воздух',
-		targetBoth: 'земля + воздух',
-
-		towerCost: 'Стоимость',
-		towerRange: 'Радиус',
-		towerDamage: 'Урон',
-		robotDamage: 'Урон робота',
-		robotHp: 'HP робота',
-		robotCount: 'Лимит ботов',
-		levelLabel: 'Уровень',
-
-		encyclopediaTitle: '📖 Справочник оборудования и фауны',
-		encyclopediaSubtitle: 'Полный каталог промышленного оружия колонии и вражеских мутантов',
-		tabTowers: 'Башни (8 типов / 32 уровня)',
-		tabEnemies: 'Фауна (10 врагов)',
-		tabHeroes: 'Специалисты (5 героев)',
-		backToGame: 'Вернуться к игре',
-		missionSquad: 'Боевой состав миссии',
-		selectTowersHelp: 'Инженерные установки (Выберите от 1 до 5)',
-		selectHeroesHelp: 'Главные специалисты (Выберите 1 или 2)',
-		heroInspectorTitle: 'Инспектор специалиста',
-		heroStatsHp: 'Здоровье',
-		heroStatsDamage: 'Урон',
-		heroStatsRange: 'Радиус',
-		heroStatsCooldown: 'Кулдаун',
-		limitReached: 'Лимит исчерпан. Снимите выбор с другого элемента.',
-		inSquad: 'В отряде',
-		selectedBadge: 'Выбрано',
-		btnBriefing: 'Далее: Вводный брифинг →',
-		btnToBattle: 'В бой!',
-		btnChangeLoadout: '← Изменить набор'
 	}
 };
 
