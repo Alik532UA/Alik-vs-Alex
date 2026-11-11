@@ -1,4 +1,4 @@
-# Alik vs Sahko — Space Colony Tower Defense
+# Alik vs Alex — Space Colony Tower Defense
 
 > Tactical Sci-Fi 2D Tower Defense game built with Svelte 5 (Runes), Tailwind CSS, and HTML5 Canvas.
 

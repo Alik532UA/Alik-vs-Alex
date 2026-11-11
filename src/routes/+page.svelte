@@ -497,7 +497,7 @@
 	<header class="w-full max-w-6xl flex items-center justify-between py-2 px-1 mb-2 text-xs">
 		<div class="flex items-center gap-2">
 			<span class="font-extrabold text-amber-400 tracking-wider uppercase text-sm"
-				>Alik vs Sahko</span
+				>Alik vs Alex</span
 			>
 			<span class="text-slate-500 hidden sm:inline">•</span>
 			<span class="text-slate-400 hidden sm:inline">{t.subtitle}</span>

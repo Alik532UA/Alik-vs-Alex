@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const BASE = process.env.BASE_PATH ?? '/Alik-vs-Alex';
 
-test.describe('Alik vs Sahko — Game Smoke & Accessibility E2E', () => {
+test.describe('Alik vs Alex — Game Smoke & Accessibility E2E', () => {
 	test('renders campaign menu and navigates into active battle arena', async ({ page }) => {
 		await page.goto(`${BASE}/`);
 

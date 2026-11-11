@@ -58,7 +58,7 @@ export interface GameTranslations {
 
 export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 	uk: {
-		title: 'Алік проти Сахка',
+		title: 'Алік проти Алекса',
 		subtitle: 'Тактична оборона космічної майстерні',
 		waves: 'Хвиля',
 		scrap: 'Брухт',
@@ -110,7 +110,7 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		btnChangeLoadout: '← Змінити набір'
 	},
 	en: {
-		title: 'Alik vs Sahko',
+		title: 'Alik vs Alex',
 		subtitle: 'Space Colony Workshop Tower Defense',
 		waves: 'Wave',
 		scrap: 'Scrap',

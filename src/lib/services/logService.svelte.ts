@@ -1,5 +1,5 @@
 /**
- * Ring-buffer diagnostic logger for Alik vs Sahko (DEBUGGING-v10 § 1).
+ * Ring-buffer diagnostic logger for Alik vs Alex (DEBUGGING-v10 § 1).
  */
 
 export interface LogEntry {

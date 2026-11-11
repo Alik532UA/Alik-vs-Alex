@@ -1,4 +1,4 @@
-# Alik vs Sahko (Space Colony Tower Defense)
+# Alik vs Alex (Space Colony Tower Defense)
 
 Тактична 2D Tower Defense стратегія на базі **Svelte 5 / SvelteKit / Tailwind CSS / TypeScript / HTML5 Canvas 2D**.
 Сюжет: аварія на гірничодобувній базі далекої колонії. Інженери використовують переобладнані будівельні інструменти, дрони та екзокостюми для стримування навали чужорідних форм життя.

@@ -6,8 +6,8 @@ describe('Game Internationalization (i18n Parity & Language Policy)', () => {
 		const uk = getTranslation('uk');
 		const en = getTranslation('en');
 
-		expect(uk.title).toBe('Алік проти Сахка');
-		expect(en.title).toBe('Alik vs Sahko');
+		expect(uk.title).toBe('Алік проти Алекса');
+		expect(en.title).toBe('Alik vs Alex');
 
 		const ukKeys = Object.keys(uk).sort();
 		const enKeys = Object.keys(en).sort();

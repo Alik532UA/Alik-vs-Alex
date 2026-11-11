@@ -3,7 +3,7 @@
 Опис: Канонічні інструкції для будь-якого AI-асистента в цьому репозиторії
 ---
 
-# AGENTS.md — Alik vs Sahko (Space Colony Tower Defense)
+# AGENTS.md — Alik vs Alex (Space Colony Tower Defense)
 
 > **Спершу прочитай [PROJECT-CONTEXT.md](PROJECT-CONTEXT.md).** Там зафіксовано архітектурні інваріанти за каноном v10: параметри адресації, префікси сховища, SEO-політика, політика безпеки (CSP), ігрові механіки та стандарти якості. Цей файл — практична витримка для щоденної роботи агентів.
 
@@ -11,7 +11,7 @@
 
 ## 1. Що це за проєкт
 
-Тактична науково-фантастична 2D-стратегія **Alik vs Sahko** (Tower Defense) на базі Svelte 5 (Runes), Tailwind CSS v4, TypeScript та HTML5 Canvas.
+Тактична науково-фантастична 2D-стратегія **Alik vs Alex** (Tower Defense) на базі Svelte 5 (Runes), Tailwind CSS v4, TypeScript та HTML5 Canvas.
 
 - **Основні механіки**: 8 типів індустріальних веж із 4 рівнями модернізації, 10 архетипів ворогів з унікальними здібностями (щити, спори, стрибки), 5 спеціалізованих героїв-інженерів, симуляція на базі `requestAnimationFrame` та Canvas 2D.
 - **Стек**: SvelteKit 3 (`@sveltejs/kit`), Svelte 5 (Runes), TypeScript 6, `@sveltejs/adapter-static`, `@tailwindcss/vite`.

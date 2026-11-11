@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>{status} — {is404 ? 'Зона поза периметром' : 'Системний збій'} · Alik vs Sahko</title>
+	<title>{status} — {is404 ? 'Зона поза периметром' : 'Системний збій'} · Alik vs Alex</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 

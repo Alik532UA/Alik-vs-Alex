@@ -4,11 +4,11 @@
 Дата оновлення: 2026-11-11
 ---
 
-# Alik vs Sahko — Project Context
+# Alik vs Alex — Project Context
 
 ## 1. Загальні відомості
 
-- **Назва**: Alik vs Sahko (Space Colony Tower Defense)
+- **Назва**: Alik vs Alex (Space Colony Tower Defense)
 - **Опис**: Тактична науково-фантастична 2D-стратегія Tower Defense: захист майстерні колонії від хвиль інопланетних загарбників за допомогою переобладнаного промислового устаткування, бойових інженерів та роботизованих ліній.
 - **Стек**: SvelteKit 3 (`@sveltejs/kit`), Svelte 5 (Runes), TypeScript, Tailwind CSS v4 (`@tailwindcss/vite`), HTML5 Canvas 2D, `@sveltejs/adapter-static`.
 - **Хостинг**: GitHub Pages (`https://alik532ua.github.io/Alik-vs-Alex/`).
