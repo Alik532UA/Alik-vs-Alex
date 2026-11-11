@@ -157,22 +157,21 @@
 
 ## 10. Опціональні критерії інженерного та продуктового пакетів
 
-| Критерій | Застосовано | Причина / Локація |
-| :--- | :---: | :--- |
-| **I18N** | Так | Двомовність UA/EN, `src/lib/i18n/game.ts` |
-| **DEPENDENCIES** | Так | Dependabot, lockfile, `scripts/check-audit.mjs` |
-| **VERSIONING** | Так | `__APP_VERSION__`, `scripts/bump-version.mjs` |
-| **ACCESSIBILITY** | Так | `GameAccessibilityManager`, ARIA live, WCAG 2.2 AA |
-| **STORAGE-NAMESPACE** | Так | Префікс `alikvsalex_`, `src/lib/services/storage.ts` |
-| **ERROR-HANDLING** | Так | `<svelte:boundary>`, stale-build захист у `hooks.client.ts` |
-| **PURE-SIMULATION** | Так | Ізольований детермінований рушій `src/lib/game/engine.ts` |
+| Критерій              | Застосовано | Причина / Локація                                           |
+| :-------------------- | :---------: | :---------------------------------------------------------- |
+| **I18N**              |     Так     | Двомовність UA/EN, `src/lib/i18n/game.ts`                   |
+| **DEPENDENCIES**      |     Так     | Dependabot, lockfile, `scripts/check-audit.mjs`             |
+| **VERSIONING**        |     Так     | `__APP_VERSION__`, `scripts/bump-version.mjs`               |
+| **ACCESSIBILITY**     |     Так     | `GameAccessibilityManager`, ARIA live, WCAG 2.2 AA          |
+| **STORAGE-NAMESPACE** |     Так     | Префікс `alikvsalex_`, `src/lib/services/storage.ts`        |
+| **ERROR-HANDLING**    |     Так     | `<svelte:boundary>`, stale-build захист у `hooks.client.ts` |
+| **PURE-SIMULATION**   |     Так     | Ізольований детермінований рушій `src/lib/game/engine.ts`   |
 
 ---
 
 ## 11. Свідомі відхилення від канону
 
 1. **Процедурний веб-синтез замість звукових банків (ADR 0002)**:
-   - *Причина*: Звуки пострілів, лазерів, вибухів та сирен генеруються через Web Audio API в реальному часі, що заощаджує 10+ МБ мережевого трафіку при першому завантаженні гри.
+   - _Причина_: Звуки пострілів, лазерів, вибухів та сирен генеруються через Web Audio API в реальному часі, що заощаджує 10+ МБ мережевого трафіку при першому завантаженні гри.
 2. **Чистий детермінований крок часу `update(dt)` (ADR 0001)**:
-   - *Причина*: Ігрова симуляція математично відокремлена від Canvas 2D, що дозволяє виконувати стрес-тести 1000+ ітерацій у Vitest за мілісекунди без запуску браузерного вікна.
-
+   - _Причина_: Ігрова симуляція математично відокремлена від Canvas 2D, що дозволяє виконувати стрес-тести 1000+ ітерацій у Vitest за мілісекунди без запуску браузерного вікна.
