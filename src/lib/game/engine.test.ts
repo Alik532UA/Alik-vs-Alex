@@ -138,4 +138,26 @@ describe('Tower Defense Game Engine (TDGameEngine)', () => {
 			expect(HEROES[hid].hp).toBeGreaterThan(0);
 		}
 	});
+
+	it('scales efficiently during heavy combat simulation (1000 ticks < 100ms)', () => {
+		// Spawn towers across all available slots
+		for (const slot of MISSION_01.towerSlots) {
+			engine.buildTower(slot.id, 'drill');
+		}
+
+		// Spawn 50 enemies into active combat
+		for (let i = 0; i < 50; i++) {
+			engine.spawnEnemy(i % 2 === 0 ? 'runner' : 'armored_beetle');
+		}
+
+		const t0 = performance.now();
+		// Simulate 1000 game physics/combat ticks (dt = 0.016s -> ~16 seconds of in-game battle)
+		for (let i = 0; i < 1000; i++) {
+			engine.update(0.016);
+		}
+		const duration = performance.now() - t0;
+
+		expect(duration).toBeLessThan(100); // 1000 full game engine ticks in < 100ms
+		expect(engine.simTime).toBeGreaterThan(0);
+	});
 });
