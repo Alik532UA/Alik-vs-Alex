@@ -761,14 +761,14 @@
 								>
 									{#if isSelected}
 										<span
-											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 shadow flex items-center gap-1"
+											class="absolute top-2 right-2 z-10 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 shadow flex items-center gap-1"
 										>
 											<Check size={11} weight="bold" />
 											<span>{t.selectedBadge}</span>
 										</span>
 									{:else if isDimmed}
 										<span
-											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900/90 text-slate-400 border border-slate-800 flex items-center gap-1"
+											class="absolute top-2 right-2 z-10 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900/90 text-slate-400 border border-slate-800 flex items-center gap-1"
 										>
 											<Lock size={11} weight="bold" />
 											<span>5/5</span>
@@ -854,14 +854,14 @@
 								>
 									{#if isSelected}
 										<span
-											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 shadow flex items-center gap-1"
+											class="absolute top-2 right-2 z-10 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 shadow flex items-center gap-1"
 										>
 											<Star size={11} weight="fill" />
 											<span>{t.inSquad}</span>
 										</span>
 									{:else if isDimmed}
 										<span
-											class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900/90 text-slate-400 border border-slate-800 flex items-center gap-1"
+											class="absolute top-2 right-2 z-10 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900/90 text-slate-400 border border-slate-800 flex items-center gap-1"
 										>
 											<Lock size={11} weight="bold" />
 											<span>2/2</span>
