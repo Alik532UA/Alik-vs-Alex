@@ -32,4 +32,14 @@ describe('Game Accessibility (a11y & Grid Navigation)', () => {
 		a11y.announceWave(5, 10);
 		expect(a11y.getAnnouncement()).toContain('Wave 5 / 10');
 	});
+
+	it('provides comprehensive ARIA live announcements for combat status and errors', () => {
+		const a11y = new GameAccessibilityManager(15, 9, 'uk');
+		a11y.announce('Недостатньо металобрухту для побудови');
+		expect(a11y.getAnnouncement()).toBe('Недостатньо металобрухту для побудови');
+
+		a11y.setLocale('en');
+		a11y.announce('Insufficient scrap');
+		expect(a11y.getAnnouncement()).toBe('Insufficient scrap');
+	});
 });
