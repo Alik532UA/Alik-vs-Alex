@@ -376,7 +376,10 @@ export function getLocalizedEnemy(id: EnemyId, locale: GameLocale = 'uk'): Enemy
 	};
 }
 
-export function getLocalizedMission(missionId: string = 'mission_01', locale: GameLocale = 'uk'): MissionConfig {
+export function getLocalizedMission(
+	missionId: string = 'mission_01',
+	locale: GameLocale = 'uk'
+): MissionConfig {
 	const base = MISSION_01;
 	const trans = CONTENT_I18N[locale]?.missions[missionId] ?? CONTENT_I18N.uk.missions[missionId];
 	if (!trans) return base;

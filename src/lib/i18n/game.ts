@@ -239,8 +239,7 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		secondsSuffix: 'с',
 		selectMinTowerWarning: 'Оберіть щонайменше 1 інженерну вежу для захисту.',
 		selectMinHeroWarning: 'Оберіть щонайменше 1 спеціаліста (героя).',
-		challengeSquadNotice:
-			'Челендж-склад ({towers}/5 веж, {heroes}/2 героїв). Гра буде складнішою!',
+		challengeSquadNotice: 'Челендж-склад ({towers}/5 веж, {heroes}/2 героїв). Гра буде складнішою!',
 
 		closeModal: 'Закрити',
 		speedLabel: 'Швидкість',
@@ -397,8 +396,7 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		menuBtn: 'Menu',
 		pauseOverlayNotice:
 			'Tactical pause: building, hero orders, and active abilities are disabled during pause by design.',
-		canvasAriaLabel:
-			'Space colony battlefield: defensive towers, sector grid, and alien path',
+		canvasAriaLabel: 'Space colony battlefield: defensive towers, sector grid, and alien path',
 		victoryTitle: 'WORKSHOP SAVED!',
 		victoryStars: 'Stars earned',
 		remainingLives: 'Remaining lives',
