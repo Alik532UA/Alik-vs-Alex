@@ -91,6 +91,52 @@ export interface GameTranslations {
 	needMoreUnits: string;
 	specialistsSquad: string;
 	towersSquad: string;
+	towersCountLabel: string;
+	specialistsCountLabel: string;
+
+	// Tooltips and notices
+	presetRandomTooltip: string;
+	presetBalanceTooltip: string;
+	presetHeavyTooltip: string;
+	presetControlTooltip: string;
+	presetClearTooltip: string;
+	secondsSuffix: string;
+	selectMinTowerWarning: string;
+	selectMinHeroWarning: string;
+	challengeSquadNotice: string;
+
+	// Encyclopedia & traits
+	closeModal: string;
+	speedLabel: string;
+	armorLabel: string;
+	jumpTrait: string;
+	spawnsOnDeathTrait: string;
+	periodicSpawnTrait: string;
+	shieldAuraTrait: string;
+	basicUnitTrait: string;
+
+	// In-game HUD & controls
+	hudLives: string;
+	hudScrap: string;
+	hudWave: string;
+	earlyWaveBtn: string;
+	tacticalPause: string;
+	editorTooltip: string;
+	editorOn: string;
+	menuBtn: string;
+	pauseOverlayNotice: string;
+	canvasAriaLabel: string;
+	victoryTitle: string;
+	victoryStars: string;
+	remainingLives: string;
+	defeatTitle: string;
+	defeatSubtitle: string;
+	toMenuBtn: string;
+	selectTowerBuildSlot: string;
+	upgradeTowerTo: string;
+	demolishTower: string;
+	slotInstructionHint: string;
+	copyMapJsonBtn: string;
 }
 
 export const GAME_I18N: Record<GameLocale, GameTranslations> = {
@@ -181,7 +227,54 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		readyToDeploy: 'Загін сформовано і готовий до висадки',
 		needMoreUnits: 'Оберіть щонайменше 1 установку та 1 спеціаліста',
 		specialistsSquad: 'Спеціалісти загону:',
-		towersSquad: 'Установки загону:'
+		towersSquad: 'Установки загону:',
+		towersCountLabel: 'Установки',
+		specialistsCountLabel: 'Спеціалісти',
+
+		presetRandomTooltip: 'Згенерувати 5 випадкових веж та 2 випадкових героїв',
+		presetBalanceTooltip: 'Універсальний набір: затримка, лазер, пробиття та монтаж',
+		presetHeavyTooltip: 'Бронебійні знаряддя, важкі крани та штурмові екзокостюми',
+		presetControlTooltip: 'Сповільнення сейсмікою, мінні загородження та зачистка',
+		presetClearTooltip: 'Скинути весь вибір (0 веж, 0 героїв)',
+		secondsSuffix: 'с',
+		selectMinTowerWarning: 'Оберіть щонайменше 1 інженерну вежу для захисту.',
+		selectMinHeroWarning: 'Оберіть щонайменше 1 спеціаліста (героя).',
+		challengeSquadNotice:
+			'Челендж-склад ({towers}/5 веж, {heroes}/2 героїв). Гра буде складнішою!',
+
+		closeModal: 'Закрити',
+		speedLabel: 'Швидкість',
+		armorLabel: 'Броня',
+		jumpTrait: 'Стрибок через перешкоди',
+		spawnsOnDeathTrait: 'Розпадається при смерті',
+		periodicSpawnTrait: 'Породжує зграю в польоті',
+		shieldAuraTrait: 'Аура щита союзникам',
+		basicUnitTrait: '— Базовий штурмовик —',
+
+		hudLives: 'Життя',
+		hudScrap: 'Ресурси',
+		hudWave: 'Хвиля',
+		earlyWaveBtn: 'Дострокова хвиля',
+		tacticalPause: 'Пауза огляду',
+		editorTooltip: 'Клік: додати точку шляху, Shift+Клік: додати слот вежі',
+		editorOn: 'Редактор ON',
+		menuBtn: 'Меню',
+		pauseOverlayNotice:
+			'Пауза для огляду поля: за правилами концепту будівництво, накази героям та здібності під час паузи недоступні.',
+		canvasAriaLabel:
+			'Ігрове поле космічної колонії: захисні вежі, сітка секторів та шлях прибульців',
+		victoryTitle: 'МАЙСТЕРНЮ ВРЯТОВАНО!',
+		victoryStars: 'Зірок здобуто',
+		remainingLives: 'Залишок життів',
+		defeatTitle: 'ОБОРОНУ ПРОРВАНО',
+		defeatSubtitle: 'Фауна захопила майстерню. Спробуйте іншу комбінацію веж!',
+		toMenuBtn: 'У меню',
+		selectTowerBuildSlot: 'Оберіть установку для зведення на слоті',
+		upgradeTowerTo: 'Покращити до',
+		demolishTower: 'Демонтаж',
+		slotInstructionHint:
+			'Клікніть на круглий будівельний слот (+), щоб звести вежу, або оберіть героя для переміщення по полю.',
+		copyMapJsonBtn: 'Копіювати JSON мапи'
 	},
 	en: {
 		title: 'Alik vs Alex',
@@ -270,7 +363,54 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		readyToDeploy: 'Squad assembled and ready for deployment',
 		needMoreUnits: 'Select at least 1 tower and 1 specialist',
 		specialistsSquad: 'Squad Specialists:',
-		towersSquad: 'Squad Towers:'
+		towersSquad: 'Squad Towers:',
+		towersCountLabel: 'Towers',
+		specialistsCountLabel: 'Specialists',
+
+		presetRandomTooltip: 'Generate 5 random towers and 2 random specialists',
+		presetBalanceTooltip: 'Balanced loadout: stall, laser, piercing and construction',
+		presetHeavyTooltip: 'Heavy loadout: armor-piercing tools, heavy cranes and assault exosuits',
+		presetControlTooltip: 'Control loadout: seismic slow, minefields and clearing',
+		presetClearTooltip: 'Clear all selections (0 towers, 0 specialists)',
+		secondsSuffix: 's',
+		selectMinTowerWarning: 'Select at least 1 engineering tower for defense.',
+		selectMinHeroWarning: 'Select at least 1 specialist (hero).',
+		challengeSquadNotice:
+			'Challenge squad ({towers}/5 towers, {heroes}/2 specialists). The battle will be tougher!',
+
+		closeModal: 'Close',
+		speedLabel: 'Speed',
+		armorLabel: 'Armor',
+		jumpTrait: 'Jumps over obstacles',
+		spawnsOnDeathTrait: 'Spawns units on death',
+		periodicSpawnTrait: 'Spawns swarm periodically',
+		shieldAuraTrait: 'Shield aura to allies',
+		basicUnitTrait: '— Basic Attacker —',
+
+		hudLives: 'Lives',
+		hudScrap: 'Scrap',
+		hudWave: 'Wave',
+		earlyWaveBtn: 'Early Wave',
+		tacticalPause: 'Tactical Pause',
+		editorTooltip: 'Click: add waypoint, Shift+Click: add tower slot',
+		editorOn: 'Editor ON',
+		menuBtn: 'Menu',
+		pauseOverlayNotice:
+			'Tactical pause: building, hero orders, and active abilities are disabled during pause by design.',
+		canvasAriaLabel:
+			'Space colony battlefield: defensive towers, sector grid, and alien path',
+		victoryTitle: 'WORKSHOP SAVED!',
+		victoryStars: 'Stars earned',
+		remainingLives: 'Remaining lives',
+		defeatTitle: 'DEFENSE BREACHED',
+		defeatSubtitle: 'Hostile fauna overran the workshop. Try a different tower combination!',
+		toMenuBtn: 'To Menu',
+		selectTowerBuildSlot: 'Select tower to construct on slot',
+		upgradeTowerTo: 'Upgrade to',
+		demolishTower: 'Demolish',
+		slotInstructionHint:
+			'Click on a build slot (+) to construct a tower, or select a hero to move across the field.',
+		copyMapJsonBtn: 'Copy Map JSON'
 	}
 };
 

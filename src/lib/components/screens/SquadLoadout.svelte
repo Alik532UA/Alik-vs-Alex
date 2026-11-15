@@ -2,7 +2,7 @@
 	import { asset } from '$app/paths';
 	import { TOWERS, HEROES } from '$lib/game/configs';
 	import { getTowerAssetPath, getHeroAssetPath } from '$lib/game/sprites';
-	import type { TowerId, HeroId, TowerConfig, HeroConfig } from '$lib/game/types';
+	import type { TowerId, HeroId } from '$lib/game/types';
 	import { gameAudio } from '$lib/game/audio';
 	import { game } from '$lib/game/state.svelte';
 	import { getTranslation, getTargetDomainLabel } from '$lib/i18n/game';
@@ -25,6 +25,8 @@
 		Warning
 	} from 'phosphor-svelte';
 
+	import { getLocalizedTower, getLocalizedHero } from '$lib/i18n/content';
+
 	interface Props {
 		onBack: () => void;
 		onNext: () => void;
@@ -32,16 +34,20 @@
 
 	let { onBack, onNext }: Props = $props();
 
-	const towerList: TowerConfig[] = Object.values(TOWERS);
-	const heroList: HeroConfig[] = Object.values(HEROES);
 	const t = $derived(getTranslation(game.locale));
+	const towerList = $derived(
+		Object.keys(TOWERS).map((id) => getLocalizedTower(id as TowerId, game.locale))
+	);
+	const heroList = $derived(
+		Object.keys(HEROES).map((id) => getLocalizedHero(id as HeroId, game.locale))
+	);
 
 	let inspectorType = $state<'hero' | 'tower'>('hero');
 	let inspectedHeroId = $state<HeroId>('fastener_hero');
 	let inspectedTowerId = $state<TowerId>('drill');
 
-	const inspectedHero = $derived(HEROES[inspectedHeroId]);
-	const inspectedTower = $derived(TOWERS[inspectedTowerId]);
+	const inspectedHero = $derived(getLocalizedHero(inspectedHeroId, game.locale));
+	const inspectedTower = $derived(getLocalizedTower(inspectedTowerId, game.locale));
 </script>
 
 <div
@@ -58,8 +64,8 @@
 			<div>
 				<h2 class="text-2xl font-bold">{t.loadoutTitle}</h2>
 				<p class="text-slate-400 text-sm">
-					{t.loadoutSubtitle} (Установки:
-					<span class="font-bold text-amber-400">{game.selectedTowers.length}/5</span>, Спеціалісти:
+					{t.loadoutSubtitle} ({t.towersCountLabel}:
+					<span class="font-bold text-amber-400">{game.selectedTowers.length}/5</span>, {t.specialistsCountLabel}:
 					<span class="font-bold text-emerald-400">{game.selectedHeroes.length}/2</span>)
 				</p>
 			</div>
@@ -90,7 +96,7 @@
 				}
 			}}
 			class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs transition cursor-pointer flex items-center gap-1.5 border border-slate-700 hover:border-amber-400 shadow-sm"
-			title="Згенерувати 5 випадкових веж та 2 випадкових героїв"
+			title={t.presetRandomTooltip}
 		>
 			<DiceFive size={15} weight="bold" />
 			<span>{t.presetRandom}</span>
@@ -107,7 +113,7 @@
 			'balance'
 				? 'bg-amber-500 text-slate-950 border-amber-400 shadow'
 				: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
-			title="Універсальний набір: затримка, лазер, пробиття та монтаж"
+			title={t.presetBalanceTooltip}
 		>
 			<Shield size={15} weight="fill" />
 			<span>{t.presetBalance}</span>
@@ -124,7 +130,7 @@
 			'heavy'
 				? 'bg-amber-500 text-slate-950 border-amber-400 shadow'
 				: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
-			title="Бронебійні знаряддя, важкі крани та штурмові екзокостюми"
+			title={t.presetHeavyTooltip}
 		>
 			<Bomb size={15} weight="fill" />
 			<span>{t.presetHeavy}</span>
@@ -141,7 +147,7 @@
 			'control'
 				? 'bg-amber-500 text-slate-950 border-amber-400 shadow'
 				: 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'}"
-			title="Сповільнення сейсмікою, мінні загородження та зачистка"
+			title={t.presetControlTooltip}
 		>
 			<Wind size={15} weight="bold" />
 			<span>{t.presetControl}</span>
@@ -154,7 +160,7 @@
 				game.clearLoadout();
 			}}
 			class="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:border-rose-500/60 font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
-			title="Скинути весь вибір (0 веж, 0 героїв)"
+			title={t.presetClearTooltip}
 		>
 			<Trash size={15} weight="bold" />
 			<span>{t.presetClear}</span>
@@ -457,7 +463,7 @@
 							<span class="text-slate-400 text-[10px] block">{t.heroStatsCooldown}</span>
 							<span class="font-bold text-purple-300 flex items-center gap-1">
 								<Timer size={14} weight="bold" />
-								<span>{inspectedHero.abilityCooldown}с</span>
+								<span>{inspectedHero.abilityCooldown}{t.secondsSuffix}</span>
 							</span>
 						</div>
 					</div>
@@ -636,17 +642,18 @@
 					{#if game.selectedTowers.length === 0 && game.selectedHeroes.length === 0}
 						{t.needMoreUnits}
 					{:else if game.selectedTowers.length === 0}
-						Оберіть щонайменше 1 інженерну вежу для захисту.
+						{t.selectMinTowerWarning}
 					{:else}
-						Оберіть щонайменше 1 спеціаліста (героя).
+						{t.selectMinHeroWarning}
 					{/if}
 				</span>
 			{:else if game.selectedTowers.length < 5 || game.selectedHeroes.length < 2}
 				<span class="text-amber-300 font-semibold flex items-center gap-1.5">
 					<Lightning size={16} weight="fill" />
 					<span>
-						Челендж-склад ({game.selectedTowers.length}/5 веж, {game.selectedHeroes.length}/2
-						героїв). Гра буде складнішою!
+						{t.challengeSquadNotice
+							.replace('{towers}', String(game.selectedTowers.length))
+							.replace('{heroes}', String(game.selectedHeroes.length))}
 					</span>
 				</span>
 			{:else}

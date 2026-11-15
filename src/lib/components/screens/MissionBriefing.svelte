@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
-	import { HEROES, TOWERS } from '$lib/game/configs';
 	import { getHeroAssetPath, getTowerAssetPath } from '$lib/game/sprites';
 	import type { HeroId } from '$lib/game/types';
 	import { game } from '$lib/game/state.svelte';
 	import { getTranslation } from '$lib/i18n/game';
+	import { getLocalizedMission, getLocalizedHero, getLocalizedTower } from '$lib/i18n/content';
 	import { Shield, Star, Lightning } from 'phosphor-svelte';
 
 	interface Props {
@@ -15,25 +15,26 @@
 	let { onBack, onBattle }: Props = $props();
 
 	const t = $derived(getTranslation(game.locale));
+	const mission = $derived(getLocalizedMission(game.mission.id ?? 'mission_01', game.locale));
 
 	function getSpeakerHeroId(speaker: string): HeroId | null {
-		if (speaker.includes('Макс')) return 'fastener_hero';
-		if (speaker.includes('Борг')) return 'exosuit_hero';
-		if (speaker.includes('Ірина')) return 'laser_hero';
-		if (speaker.includes('Влад')) return 'flamer_hero';
-		if (speaker.includes('Док')) return 'chemist_hero';
+		if (speaker.includes('Макс') || speaker.includes('Max')) return 'fastener_hero';
+		if (speaker.includes('Борг') || speaker.includes('Borg')) return 'exosuit_hero';
+		if (speaker.includes('Ірина') || speaker.includes('Irina')) return 'laser_hero';
+		if (speaker.includes('Влад') || speaker.includes('Vlad')) return 'flamer_hero';
+		if (speaker.includes('Док') || speaker.includes('Doc')) return 'chemist_hero';
 		return null;
 	}
 </script>
 
 <div class="max-w-3xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-	<div class="text-xs font-bold uppercase text-amber-400">{game.mission.district}</div>
-	<h2 class="text-3xl font-extrabold">{game.mission.title}</h2>
-	<p class="text-slate-400 text-sm">{game.mission.subtitle}</p>
+	<div class="text-xs font-bold uppercase text-amber-400">{mission.district}</div>
+	<h2 class="text-3xl font-extrabold">{mission.title}</h2>
+	<p class="text-slate-400 text-sm">{mission.subtitle}</p>
 
 	<!-- Dialogue lines -->
 	<div class="space-y-3 py-2">
-		{#each game.mission.preMissionDialogue as line}
+		{#each mission.preMissionDialogue as line}
 			{@const hid = getSpeakerHeroId(line.speaker)}
 			<div
 				class="p-4 rounded-xl bg-slate-950 border-l-4 flex gap-4 items-center"
@@ -80,7 +81,7 @@
 			</div>
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
 				{#each game.selectedHeroes as hid}
-					{@const hero = HEROES[hid]}
+					{@const hero = getLocalizedHero(hid, game.locale)}
 					<div
 						class="flex items-center gap-2.5 p-2 rounded-lg bg-slate-900 border border-slate-800"
 					>
@@ -114,7 +115,7 @@
 			</div>
 			<div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
 				{#each game.selectedTowers as tid}
-					{@const twr = TOWERS[tid]}
+					{@const twr = getLocalizedTower(tid, game.locale)}
 					<div
 						class="flex flex-col items-center p-2 rounded-lg bg-slate-900 border border-slate-800 text-center"
 					>

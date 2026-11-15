@@ -208,7 +208,10 @@ export class TDGameEngine {
 				ttl: 1.2,
 				maxTtl: 1.2,
 				kind: 'text',
-				text: `+${waveCfg.earlyCallBonus} Достроково!`
+				text:
+					game.locale === 'en'
+						? `+${waveCfg.earlyCallBonus} Early!`
+						: `+${waveCfg.earlyCallBonus} Достроково!`
 			});
 		}
 
@@ -464,7 +467,7 @@ export class TDGameEngine {
 						ttl: 0.5,
 						maxTtl: 0.5,
 						kind: 'text',
-						text: 'СТРИБОК!'
+						text: game.locale === 'en' ? 'JUMP!' : 'СТРИБОК!'
 					});
 				} else {
 					e.attackTimer -= dt;

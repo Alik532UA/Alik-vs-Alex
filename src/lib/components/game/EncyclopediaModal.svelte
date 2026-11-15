@@ -2,8 +2,9 @@
 	import { asset } from '$app/paths';
 	import { TOWERS, ENEMIES, HEROES } from '$lib/game/configs';
 	import { getTowerAssetPath, getEnemyAssetPath, getHeroAssetPath } from '$lib/game/sprites';
-	import type { TowerId, TowerConfig, EnemyConfig, HeroConfig } from '$lib/game/types';
+	import type { TowerId, EnemyId, HeroId } from '$lib/game/types';
 	import { getTranslation, getTargetDomainLabel } from '$lib/i18n/game';
+	import { getLocalizedTower, getLocalizedHero, getLocalizedEnemy } from '$lib/i18n/content';
 	import { game } from '$lib/game/state.svelte';
 	import { X, Lightning, Star, Shield, Sparkle } from 'phosphor-svelte';
 
@@ -17,9 +18,15 @@
 	let encyclopediaTab = $state<'towers' | 'enemies' | 'heroes'>('towers');
 	let selectedEncyclopediaTowerId = $state<TowerId>('drill');
 
-	const towerList: TowerConfig[] = Object.values(TOWERS);
-	const enemyList: EnemyConfig[] = Object.values(ENEMIES);
-	const heroList: HeroConfig[] = Object.values(HEROES);
+	const towerList = $derived(
+		Object.keys(TOWERS).map((id) => getLocalizedTower(id as TowerId, game.locale))
+	);
+	const enemyList = $derived(
+		Object.keys(ENEMIES).map((id) => getLocalizedEnemy(id as EnemyId, game.locale))
+	);
+	const heroList = $derived(
+		Object.keys(HEROES).map((id) => getLocalizedHero(id as HeroId, game.locale))
+	);
 	const t = $derived(getTranslation(game.locale));
 </script>
 
@@ -73,7 +80,7 @@
 					<button
 						onclick={onClose}
 						class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer flex items-center justify-center"
-						aria-label="Закрити"
+						aria-label={t.closeModal}
 					>
 						<X size={15} weight="bold" />
 					</button>
@@ -107,7 +114,7 @@
 						{/each}
 					</div>
 
-					{@const curTower = TOWERS[selectedEncyclopediaTowerId]}
+					{@const curTower = getLocalizedTower(selectedEncyclopediaTowerId, game.locale)}
 					<div>
 						<div class="flex justify-between items-start mb-3">
 							<div>
@@ -218,10 +225,10 @@
 									<div class="text-[11px] text-slate-400 h-10 flex flex-col justify-between">
 										<div class="flex justify-between">
 											<span>HP: {e.hp}</span>
-											<span>Швидкість: {e.speed}</span>
+											<span>{t.speedLabel}: {e.speed}</span>
 										</div>
 										<div class="flex justify-between">
-											<span>Броня: {Math.round(e.armor * 100)}%</span>
+											<span>{t.armorLabel}: {Math.round(e.armor * 100)}%</span>
 											<span class="text-amber-400 flex items-center gap-0.5">
 												<span>+{e.reward}</span>
 												<Lightning size={11} weight="fill" />
@@ -237,29 +244,29 @@
 									{#if e.canJump}
 										<div class="text-amber-300 truncate flex items-center gap-1">
 											<Sparkle size={11} weight="fill" class="shrink-0" />
-											<span class="truncate">Стрибок через перешкоди</span>
+											<span class="truncate">{t.jumpTrait}</span>
 										</div>
 									{/if}
 									{#if e.spawnsOnDeath}
 										<div class="text-rose-300 truncate flex items-center gap-1">
 											<Sparkle size={11} weight="fill" class="shrink-0" />
-											<span class="truncate">Розпадається при смерті</span>
+											<span class="truncate">{t.spawnsOnDeathTrait}</span>
 										</div>
 									{/if}
 									{#if e.periodicSpawn}
 										<div class="text-purple-300 truncate flex items-center gap-1">
 											<Sparkle size={11} weight="fill" class="shrink-0" />
-											<span class="truncate">Породжує зграю в польоті</span>
+											<span class="truncate">{t.periodicSpawnTrait}</span>
 										</div>
 									{/if}
 									{#if e.shieldAuraRadius}
 										<div class="text-cyan-300 truncate flex items-center gap-1">
 											<Shield size={11} weight="fill" class="shrink-0" />
-											<span class="truncate">Аура щита союзникам</span>
+											<span class="truncate">{t.shieldAuraTrait}</span>
 										</div>
 									{/if}
 									{#if !e.canJump && !e.spawnsOnDeath && !e.periodicSpawn && !e.shieldAuraRadius}
-										<div class="text-slate-500 italic">— Базовий штурмовик —</div>
+										<div class="text-slate-500 italic">{t.basicUnitTrait}</div>
 									{/if}
 								</div>
 							</div>
@@ -295,7 +302,7 @@
 									<!-- Fixed Stats -->
 									<div class="text-xs text-slate-300 flex justify-between h-5 mb-2">
 										<span>HP: {h.hp}</span>
-										<span>Шкода: {h.damage}</span>
+										<span>{t.heroStatsDamage}: {h.damage}</span>
 									</div>
 								</div>
 

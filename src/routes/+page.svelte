@@ -7,6 +7,7 @@
 	import { sprites, getTowerAssetPath, getHeroAssetPath } from '$lib/game/sprites';
 	import { asset } from '$app/paths';
 	import { getTranslation } from '$lib/i18n/game';
+	import { getLocalizedTower, getLocalizedHero } from '$lib/i18n/content';
 	import { gameA11y } from '$lib/game/a11y';
 	import {
 		BookOpen,
@@ -525,15 +526,18 @@
 				<div class="flex items-center gap-5">
 					<div class="text-sm font-bold text-rose-400 flex items-center gap-1.5">
 						<Heart size={18} weight="fill" />
-						<span>Життя: <span class="text-lg">{game.lives}</span></span>
+						<span>{t.hudLives}: <span class="text-lg">{game.lives}</span></span>
 					</div>
 					<div class="text-sm font-bold text-amber-400 flex items-center gap-1.5">
 						<Lightning size={18} weight="fill" />
-						<span>Ресурси: <span class="text-lg">{game.currency}</span></span>
+						<span>{t.hudScrap}: <span class="text-lg">{game.currency}</span></span>
 					</div>
 					<div class="text-sm font-bold text-sky-400 flex items-center gap-1.5">
 						<Waves size={18} weight="bold" />
-						<span>Хвиля: <span class="text-lg">{game.currentWave} / {game.totalWaves}</span></span>
+						<span
+							>{t.hudWave}:
+							<span class="text-lg">{game.currentWave} / {game.totalWaves}</span></span
+						>
 					</div>
 				</div>
 
@@ -544,11 +548,12 @@
 					>
 						<Bell size={14} weight="fill" />
 						<span
-							>Дострокова хвиля (+{game.mission.waves[game.currentWave]?.earlyCallBonus ?? 0}</span
+							>{t.earlyWaveBtn} (+{game.mission.waves[game.currentWave]?.earlyCallBonus ?? 0}</span
 						>
 						<Lightning size={11} weight="fill" />
 						<span>)</span>
-						{#if !game.waveActive}<span>({Math.ceil(game.nextWaveCountdown)}с)</span>{/if}
+						{#if !game.waveActive}<span>({Math.ceil(game.nextWaveCountdown)}{t.secondsSuffix})</span
+							>{/if}
 					</button>
 				{/if}
 
@@ -561,39 +566,39 @@
 					>
 						{#if game.isPaused}
 							<Play size={13} weight="fill" />
-							<span>Зняти з паузи</span>
+							<span>{t.resume}</span>
 						{:else}
 							<Pause size={13} weight="fill" />
-							<span>Пауза огляду</span>
+							<span>{t.tacticalPause}</span>
 						{/if}
 					</button>
 					<button
 						onclick={() => (game.gameSpeed = game.gameSpeed === 1 ? 2 : 1)}
 						class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold cursor-pointer"
 					>
-						Швидкість ×{game.gameSpeed}
+						{t.speed} ×{game.gameSpeed}
 					</button>
 					<button
 						onclick={() => (encyclopediaOpen = true)}
 						class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-amber-300 cursor-pointer flex items-center justify-center"
-						title="Довідник веж та фауни"
+						title={t.encyclopediaTitle}
 					>
 						<BookOpen size={15} weight="bold" />
 					</button>
 					<button
 						onclick={() => (game.editorMode = !game.editorMode)}
 						class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-400 cursor-pointer flex items-center gap-1"
-						title="Клік: додати точку шляху, Shift+Клік: додати слот вежі"
+						title={t.editorTooltip}
 					>
 						<Wrench size={14} weight="bold" />
 						{#if game.editorMode}
-							<span>Редактор ON</span>
+							<span>{t.editorOn}</span>
 						{/if}
 					</button>
 					<button
 						onclick={() => (game.screen = 'menu')}
 						class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-xs text-slate-400 cursor-pointer"
-						>Меню</button
+						>{t.menuBtn}</button
 					>
 				</div>
 			</div>
@@ -602,8 +607,7 @@
 				<div
 					class="bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs px-4 py-1.5 rounded-lg text-center"
 				>
-					Пауза для огляду поля: за правилами концепту будівництво, накази героям та здібності під
-					час паузи недоступні.
+					{t.pauseOverlayNotice}
 				</div>
 			{/if}
 
@@ -611,14 +615,16 @@
 			<div class="relative rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
 				<div class="sr-only" aria-live="polite" aria-atomic="true">
 					{gameA11y.getAnnouncement() ||
-						`Хвиля ${game.currentWave} з ${game.totalWaves}, життів ${game.lives}, кредитів ${game.currency}`}
+						(game.locale === 'en'
+							? `Wave ${game.currentWave} of ${game.totalWaves}, lives ${game.lives}, scrap ${game.currency}`
+							: `Хвиля ${game.currentWave} з ${game.totalWaves}, життів ${game.lives}, кредитів ${game.currency}`)}
 				</div>
 				<canvas
 					bind:this={canvas}
 					width="1100"
 					height="600"
 					tabindex="0"
-					aria-label="Ігрове поле космічної колонії: захисні вежі, сітка секторів та шлях прибульців"
+					aria-label={t.canvasAriaLabel}
 					onclick={handleCanvasClick}
 					class="w-full h-auto block cursor-crosshair focus:outline-none focus:ring-2 focus:ring-cyan-400"
 				></canvas>
@@ -635,26 +641,26 @@
 									<Star size={44} weight="fill" />
 									<Star size={36} weight="fill" />
 								</div>
-								<h3 class="text-3xl font-extrabold text-emerald-400">МАЙСТЕРНЮ ВРЯТОВАНО!</h3>
+								<h3 class="text-3xl font-extrabold text-emerald-400">{t.victoryTitle}</h3>
 								<p class="text-slate-300 text-sm">
-									Зірок здобуто: {game.starsEarned} / 3 (Залишок життів: {game.lives})
+									{t.victoryStars}: {game.starsEarned} / 3 ({t.remainingLives}: {game.lives})
 								</p>
 							{:else}
-								<h3 class="text-3xl font-extrabold text-rose-500">ОБОРОНУ ПРОРВАНО</h3>
+								<h3 class="text-3xl font-extrabold text-rose-500">{t.defeatTitle}</h3>
 								<p class="text-slate-300 text-sm">
-									Фауна захопила майстерню. Спробуйте іншу комбінацію веж!
+									{t.defeatSubtitle}
 								</p>
 							{/if}
 							<div class="flex gap-3 justify-center pt-2">
 								<button
 									onclick={launchBattle}
 									class="px-6 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold cursor-pointer"
-									>Зіграти знову</button
+									>{t.restart}</button
 								>
 								<button
 									onclick={() => (game.screen = 'menu')}
 									class="px-6 py-2.5 rounded-xl bg-slate-800 font-bold cursor-pointer"
-									>У меню</button
+									>{t.toMenuBtn}</button
 								>
 							</div>
 						</div>
@@ -667,7 +673,7 @@
 				<!-- Heroes Panel with Portraits -->
 				<div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex gap-2.5">
 					{#each engine.heroes as h}
-						{@const cfg = HEROES[h.id]}
+						{@const cfg = getLocalizedHero(h.id, game.locale)}
 						<div
 							class="flex-1 p-2 rounded-lg bg-slate-950 border flex flex-col justify-between {game.activeHeroId ===
 							h.id
@@ -695,7 +701,7 @@
 										</button>
 										<span class="text-[10px] text-slate-400 shrink-0">
 											{h.respawnTimer > 0
-												? `${Math.ceil(h.respawnTimer)}с`
+												? `${Math.ceil(h.respawnTimer)}${t.secondsSuffix}`
 												: `${Math.ceil(h.hp)}/${h.maxHp}`}
 										</span>
 									</div>
@@ -713,7 +719,9 @@
 								class="mt-2 w-full py-1 rounded bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-[11px] font-bold disabled:opacity-40 cursor-pointer truncate flex items-center justify-center gap-1"
 							>
 								{#if h.abilityCooldownTimer > 0}
-									<span>{cfg.abilityName} ({Math.ceil(h.abilityCooldownTimer)}с)</span>
+									<span
+										>{cfg.abilityName} ({Math.ceil(h.abilityCooldownTimer)}{t.secondsSuffix})</span
+									>
 								{:else}
 									<Star size={11} weight="fill" />
 									<span>{cfg.abilityName}</span>
@@ -729,13 +737,13 @@
 						{@const existing = engine.towers.get(game.activeSlotId)}
 						{#if !existing}
 							<div class="text-xs text-slate-400 mb-2 font-bold">
-								Оберіть установку для зведення на слоті #{game.activeSlotId}:
+								{t.selectTowerBuildSlot} #{game.activeSlotId}:
 							</div>
 							<div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
 								{#each game.selectedTowers as tid}
-									{@const t = TOWERS[tid]}
+									{@const twr = getLocalizedTower(tid, game.locale)}
 									<button
-										disabled={game.isPaused || game.currency < t.levels[0].cost}
+										disabled={game.isPaused || game.currency < twr.levels[0].cost}
 										onclick={() => engine.buildTower(game.activeSlotId!, tid)}
 										class="p-1.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-400 disabled:opacity-40 flex items-center gap-2 text-left cursor-pointer"
 									>
@@ -744,16 +752,16 @@
 										>
 											<img
 												src={asset(getTowerAssetPath(tid, 1))}
-												alt={t.name}
+												alt={twr.name}
 												class="max-w-full max-h-full object-contain"
 											/>
 										</div>
 										<div class="min-w-0 flex-1">
-											<div class="font-bold text-xs truncate" style="color: {t.color}">
-												{t.name}
+											<div class="font-bold text-xs truncate" style="color: {twr.color}">
+												{twr.name}
 											</div>
 											<div class="text-[11px] text-amber-400 font-bold flex items-center gap-0.5">
-												<span>{t.levels[0].cost}</span>
+												<span>{twr.levels[0].cost}</span>
 												<Lightning size={11} weight="fill" />
 											</div>
 										</div>
@@ -761,7 +769,7 @@
 								{/each}
 							</div>
 						{:else}
-							{@const cfg = TOWERS[existing.type]}
+							{@const cfg = getLocalizedTower(existing.type, game.locale)}
 							{@const currStats = cfg.levels[existing.level - 1]}
 							{@const nextStats =
 								existing.level < 4 ? cfg.levels[existing.level as 1 | 2 | 3] : null}
@@ -783,7 +791,7 @@
 										>
 											<span>{cfg.name}</span>
 											<span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-200"
-												>Рівень {existing.level}/4</span
+												>{t.levelLabel} {existing.level}/4</span
 											>
 										</div>
 										<p class="text-xs text-slate-400 mt-0.5">{currStats.description}</p>
@@ -804,7 +812,7 @@
 												class="w-5 h-5 object-contain"
 											/>
 											<span class="flex items-center gap-1">
-												<span>Покращити до L{existing.level + 1} ({nextStats.cost}</span>
+												<span>{t.upgradeTowerTo} L{existing.level + 1} ({nextStats.cost}</span>
 												<Lightning size={11} weight="fill" />
 												<span>)</span>
 											</span>
@@ -815,7 +823,7 @@
 										onclick={() => engine.sellTower(existing.slotId)}
 										class="px-3 py-2 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-bold cursor-pointer"
 									>
-										Демонтаж
+										{t.demolishTower}
 									</button>
 								</div>
 							</div>
@@ -824,10 +832,7 @@
 						<div class="text-xs text-slate-400 flex items-center justify-between h-full gap-2">
 							<div class="flex items-center gap-1.5">
 								<Lightbulb size={16} weight="fill" class="text-amber-400 shrink-0" />
-								<span
-									>Клікніть на круглий будівельний слот (+), щоб звести вежу, або оберіть героя для
-									переміщення по полю.</span
-								>
+								<span>{t.slotInstructionHint}</span>
 							</div>
 							{#if game.editorMode}
 								<button
@@ -840,7 +845,7 @@
 										)}
 									class="px-3 py-1 rounded bg-sky-500 text-slate-950 font-bold cursor-pointer"
 								>
-									Копіювати JSON мапи
+									{t.copyMapJsonBtn}
 								</button>
 							{/if}
 						</div>
