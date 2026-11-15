@@ -54,6 +54,43 @@ export interface GameTranslations {
 	btnBriefing: string;
 	btnToBattle: string;
 	btnChangeLoadout: string;
+	btnBackToMenu: string;
+	btnPrepareMission: string;
+	manualBtn: string;
+	manualFullBtn: string;
+	menuBadge: string;
+	menuTitle: string;
+	menuSubtitle: string;
+	campaignOverview: string;
+	availableDistrict: string;
+	district1Name: string;
+	district1Desc: string;
+	district2Name: string;
+	district2Desc: string;
+	district3Name: string;
+	district3Desc: string;
+	district4Name: string;
+	district4Desc: string;
+	missionsLabel: string;
+	loadoutTitle: string;
+	loadoutSubtitle: string;
+	presetsLabel: string;
+	presetRandom: string;
+	presetBalance: string;
+	presetHeavy: string;
+	presetControl: string;
+	presetClear: string;
+	towerInspectorTitle: string;
+	inspectHint: string;
+	addToSquad: string;
+	removeFromSquad: string;
+	freeSlot: string;
+	squadFullTower: string;
+	squadFullHero: string;
+	readyToDeploy: string;
+	needMoreUnits: string;
+	specialistsSquad: string;
+	towersSquad: string;
 }
 
 export const GAME_I18N: Record<GameLocale, GameTranslations> = {
@@ -107,7 +144,44 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		selectedBadge: 'Обрано',
 		btnBriefing: 'Далі: Вступний брифінг →',
 		btnToBattle: 'До бою!',
-		btnChangeLoadout: '← Змінити набір'
+		btnChangeLoadout: '← Змінити набір',
+		btnBackToMenu: '← Назад у меню',
+		btnPrepareMission: 'Підготовка до Місії 01: Майстерня →',
+		manualBtn: 'Довідник',
+		manualFullBtn: 'Довідник обладнання та фауни (47 артів)',
+		menuBadge: 'Космічна Tower Defense • Повна графіка',
+		menuTitle: 'ОСТАННІЙ КОРАБЕЛЬ КОЛОНІЇ',
+		menuSubtitle: 'Цивільні спеціалісти перетворюють промислові інструменти на зброю',
+		campaignOverview: 'Кампанія: 4 райони / 20 місій',
+		availableDistrict: 'Доступно: Район 1 (Місія 01)',
+		district1Name: '1. Промислова околиця',
+		district1Desc: 'Утримати майстерню та зібрати вцілілих робітників.',
+		district2Name: '2. Житловий район',
+		district2Desc: 'Евакуація лікарні та порятунок спеціалістів.',
+		district3Name: '3. Видобуток і завод',
+		district3Desc: 'Збір вузлів та палива для материнського корабля.',
+		district4Name: '4. Космопорт',
+		district4Desc: 'Запуск систем корабля та фінальна евакуація.',
+		missionsLabel: 'МІСІЇ',
+		loadoutTitle: 'Комплектація загону перед місією',
+		loadoutSubtitle: 'Оберіть установки (1–5) та спеціалістів (1–2)',
+		presetsLabel: 'Пресети:',
+		presetRandom: 'Випадковий',
+		presetBalance: 'Баланс',
+		presetHeavy: 'Важкий',
+		presetControl: 'Контроль',
+		presetClear: 'Очистити',
+		towerInspectorTitle: 'Інспектор установки',
+		inspectHint: 'Натисніть на будь-яку картку для перегляду характеристик',
+		addToSquad: 'Додати до загону',
+		removeFromSquad: 'Вилучити із загону',
+		freeSlot: 'Вільний слот',
+		squadFullTower: '5/5 Ліміт',
+		squadFullHero: '2/2 Ліміт',
+		readyToDeploy: 'Загін сформовано і готовий до висадки',
+		needMoreUnits: 'Оберіть щонайменше 1 установку та 1 спеціаліста',
+		specialistsSquad: 'Спеціалісти загону:',
+		towersSquad: 'Установки загону:'
 	},
 	en: {
 		title: 'Alik vs Alex',
@@ -159,7 +233,44 @@ export const GAME_I18N: Record<GameLocale, GameTranslations> = {
 		selectedBadge: 'Selected',
 		btnBriefing: 'Next: Mission Briefing →',
 		btnToBattle: 'To Battle!',
-		btnChangeLoadout: '← Change Loadout'
+		btnChangeLoadout: '← Change Loadout',
+		btnBackToMenu: '← Back to Menu',
+		btnPrepareMission: 'Prepare for Mission 01: Workshop →',
+		manualBtn: 'Manual',
+		manualFullBtn: 'Equipment & Fauna Guide (47 Arts)',
+		menuBadge: 'Sci-Fi Tower Defense • Full Graphics',
+		menuTitle: 'THE LAST SHIP OF THE COLONY',
+		menuSubtitle: 'Civilian specialists turn industrial equipment into defensive weaponry',
+		campaignOverview: 'Campaign: 4 Districts / 20 Missions',
+		availableDistrict: 'Available: District 1 (Mission 01)',
+		district1Name: '1. Industrial Outskirts',
+		district1Desc: 'Hold the workshop and gather surviving workers.',
+		district2Name: '2. Residential Sector',
+		district2Desc: 'Evacuate the hospital and rescue key personnel.',
+		district3Name: '3. Mining & Refinery',
+		district3Desc: 'Collect essential components and fuel for the mothership.',
+		district4Name: '4. Spaceport',
+		district4Desc: 'Power up mothership systems for final evacuation.',
+		missionsLabel: 'MISSIONS',
+		loadoutTitle: 'Mission Squad Loadout',
+		loadoutSubtitle: 'Select towers (1–5) and specialists (1–2)',
+		presetsLabel: 'Presets:',
+		presetRandom: 'Random',
+		presetBalance: 'Balanced',
+		presetHeavy: 'Heavy',
+		presetControl: 'Control',
+		presetClear: 'Clear',
+		towerInspectorTitle: 'Tower Inspector',
+		inspectHint: 'Click any card to inspect its stats & upgrades',
+		addToSquad: 'Add to Squad',
+		removeFromSquad: 'Remove from Squad',
+		freeSlot: 'Open Slot',
+		squadFullTower: '5/5 Limit',
+		squadFullHero: '2/2 Limit',
+		readyToDeploy: 'Squad assembled and ready for deployment',
+		needMoreUnits: 'Select at least 1 tower and 1 specialist',
+		specialistsSquad: 'Squad Specialists:',
+		towersSquad: 'Squad Towers:'
 	}
 };
 
