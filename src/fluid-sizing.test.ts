@@ -46,7 +46,7 @@ describe('FLUID-SIZING-v10 canon in Alik-vs-Alex', () => {
 
 	it('prefers dvh over bare vh in CSS/Tailwind (FLUID-SIZING-v10 § 3)', () => {
 		const offenders: string[] = [];
-		const BARE_VH = /(?<![a-zA-Z0-9_\-])(?<![dls])vh\b/;
+		const BARE_VH = /(?<![a-zA-Z0-9_-])(?<![dls])vh\b/;
 		for (const file of files) {
 			const text = readFileSync(file, 'utf8');
 			text.split('\n').forEach((line, idx) => {
