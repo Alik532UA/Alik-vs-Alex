@@ -35,7 +35,7 @@
 		class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4"
 	>
 		<div
-			class="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full h-[85vh] min-h-[580px] max-h-[820px] flex flex-col overflow-hidden shadow-2xl"
+			class="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full h-[85dvh] max-h-[820px] flex flex-col overflow-hidden shadow-2xl"
 		>
 			<!-- Header with Tabs (Fixed) -->
 			<div
